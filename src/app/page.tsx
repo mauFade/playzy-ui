@@ -1,7 +1,16 @@
+"use client";
 import Image from "next/image";
 import controller from "../../public/controller.svg";
+import { FormEvent, useState } from "react";
 
 export default function Home() {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log({ email, password });
+  };
   return (
     <div className="flex min-h-screen bg-neutral-950 text-gray-100">
       {/* Seção esquerda com fundo visual */}
@@ -25,7 +34,7 @@ export default function Home() {
             Faça login para continuar explorando
           </p>
 
-          <form className="mt-6 space-y-6">
+          <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="email"
@@ -36,6 +45,10 @@ export default function Home() {
               <input
                 type="email"
                 id="email"
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                }}
                 placeholder="Digite seu email"
                 className="w-full px-4 py-3 mt-1 bg-neutral-800 border border-gray-700 rounded-lg text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
@@ -51,6 +64,10 @@ export default function Home() {
               <input
                 type="password"
                 id="password"
+                value={password}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
                 placeholder="Digite sua senha"
                 className="w-full px-4 py-3 mt-1 bg-neutral-800 border border-gray-700 rounded-lg text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
