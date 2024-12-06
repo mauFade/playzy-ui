@@ -1,8 +1,13 @@
+import Image from "next/image";
+import controller from "../../public/controller.svg";
+
 export default function Home() {
   return (
     <div className="flex min-h-screen bg-neutral-950 text-gray-100">
       {/* Seção esquerda com fundo visual */}
-      <div className="hidden lg:flex w-1/2 items-center justify-center bg-gradient-to-br from-purple-700 to-purple-900"></div>
+      <div className="hidden lg:flex w-1/2 items-center justify-center bg-gradient-to-br from-purple-900 to-purple-950">
+        <Image src={controller} alt="controller"></Image>
+      </div>
 
       {/* Seção direita com formulário */}
       <div className="flex w-full lg:w-1/2 items-center justify-center bg-neutral-900 p-8">
