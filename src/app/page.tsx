@@ -1,6 +1,5 @@
 "use client";
-import Image from "next/image";
-import controller from "../../public/controller.svg";
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export default function Home() {
@@ -12,82 +11,68 @@ export default function Home() {
     console.log({ email, password });
   };
   return (
-    <div className="flex min-h-screen bg-neutral-950 text-gray-100">
-      {/* Seção esquerda com fundo visual */}
-      <div className="hidden lg:flex w-1/2 items-center justify-center bg-gradient-to-br from-purple-900 to-purple-950">
-        <Image src={controller} alt="controller"></Image>
-      </div>
+    <div className="flex min-h-screen bg-gradient-to-br from-neutral-900 to-neutral-950 p-8 text-gray-100 items-center justify-center w-full">
+      <div className="w-full max-w-md">
+        <div className="flex items-center justify-center mb-8">
+          <span className="text-neutral-600 font-bold text-3xl">Playzy</span>
+        </div>
 
-      {/* Seção direita com formulário */}
-      <div className="flex w-full lg:w-1/2 items-center justify-center bg-neutral-900 p-8">
-        <div className="w-full max-w-md">
-          <div className="flex items-center justify-center mb-8">
-            <div className="px-6 py-2 bg-purple-700 rounded-full">
-              <span className="text-white font-bold text-xl">Playzy</span>
-            </div>
+        <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-400"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
+              placeholder="Digite seu email"
+              className="w-full px-4 py-3 mt-1 bg-neutral-800 border border-gray-700 rounded-lg text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-600"
+            />
           </div>
 
-          <h1 className="text-3xl font-bold text-center text-purple-500">
-            Bem-vindo de volta
-          </h1>
-          <p className="mt-2 text-sm text-center text-gray-400">
-            Faça login para continuar explorando
-          </p>
-
-          <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-400"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(event) => {
-                  setEmail(event.target.value);
-                }}
-                placeholder="Digite seu email"
-                className="w-full px-4 py-3 mt-1 bg-neutral-800 border border-gray-700 rounded-lg text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-400"
-              >
-                Senha
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(event) => {
-                  setPassword(event.target.value);
-                }}
-                placeholder="Digite sua senha"
-                className="w-full px-4 py-3 mt-1 bg-neutral-800 border border-gray-700 rounded-lg text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full px-4 py-3 font-bold text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-400"
             >
-              Entrar
-            </button>
-          </form>
+              Senha
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(event) => {
+                setPassword(event.target.value);
+              }}
+              placeholder="Digite sua senha"
+              className="w-full px-4 py-3 mt-1 bg-neutral-800 border border-gray-700 rounded-lg text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-600"
+            />
+          </div>
 
-          <p className="mt-4 text-center text-sm text-gray-500">
-            Esqueceu sua senha?{" "}
-            <a href="#" className="text-purple-400 hover:underline">
-              Clique aqui
-            </a>
-          </p>
-        </div>
+          <button
+            type="submit"
+            className="w-full px-4 py-3 font-bold text-neutral-300 bg-neutral-800 rounded-lg hover:bg-neutral-600  focus:outline-none focus:ring-2 focus:ring-neutral-600"
+          >
+            Entrar
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-sm text-gray-500">
+          Não tem uma conta?{" "}
+          <Link
+            href="/register"
+            className="text-neutral-300 hover:underline font-medium"
+          >
+            Clique aqui
+          </Link>
+        </p>
       </div>
     </div>
   );
