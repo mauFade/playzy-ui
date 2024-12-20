@@ -1,15 +1,39 @@
 "use client";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  const {
+    data: resp,
+    isError,
+    isPending,
+  } = useQuery({
+    queryKey: ["resp"],
+    queryFn: async () => {
+      const response = await fetch("http://localhost:8080/auth", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const trueResp = await response.json();
+
+      return trueResp;
+    },
+  });
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ email, password });
+    console.log({ resp, isError, isPending });
   };
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-neutral-900 to-neutral-950 p-8 text-gray-100 items-center justify-center w-full">
       <div className="w-full max-w-md">
