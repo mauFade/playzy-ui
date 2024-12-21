@@ -3,33 +3,58 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/api/api";
+import toast, { Toast } from "react-hot-toast";
+import { MdError } from "react-icons/md";
+import { AiOutlineLoading } from "react-icons/ai";
+import { IoMdClose } from "react-icons/io";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const mutation = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: api.login,
     onSuccess: async (data) => {
       console.log(data, "FOI BUCETA");
+      toast.success("SUCESSO");
     },
-    onError: (error) => {
-      console.log(`the post with title  Fail to be created`);
-      console.log(error);
+    onError: (error, v) => {
+      toast((t: Toast) => {
+        t.duration = 5000;
+
+        const errorMessage =
+          error.message === "wrong password"
+            ? "Senha incorreta, tente novamente."
+            : `O e-mail ${v.email} não está vinculado à nenhuma conta`;
+
+        return (
+          <div className="flex items-center gap-2 font-semibold">
+            <MdError size={50} />
+            {errorMessage}
+            <button onClick={() => toast.dismiss(t.id)}>
+              <IoMdClose size={20} />
+            </button>
+          </div>
+        );
+      });
     },
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    mutation.mutate({ email, password });
+    mutate({ email, password });
   };
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-neutral-900 to-neutral-950 p-8 text-gray-100 items-center justify-center w-full">
       <div className="w-full max-w-md">
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-center mb-8 flex-col">
           <span className="text-neutral-600 font-bold text-3xl">Playzy</span>
+
+          {isPending && (
+            <AiOutlineLoading className="text-4xl text-gray-400 animate-spin" />
+          )}
         </div>
 
         <form className="mt-6 space-y-6" onSubmit={handleSubmit}>

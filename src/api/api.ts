@@ -9,7 +9,7 @@ class Api {
     email: string;
     password: string;
   }): Promise<{ user_id: string; token: string }> {
-    const response = fetch(`${this.baseUrl}/auth`, {
+    const response = await fetch("http://localhost:8080/auth", {
       method: "POST",
       body: JSON.stringify({
         email: data.email,
@@ -20,7 +20,11 @@ class Api {
       },
     });
 
-    const r = (await response).json();
+    const r = await response.json();
+
+    if (r.message) {
+      throw new Error(r.message);
+    }
 
     return r;
   }
