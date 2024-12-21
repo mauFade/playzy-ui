@@ -1,37 +1,28 @@
 "use client";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "@/api/api";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const {
-    data: resp,
-    isError,
-    isPending,
-  } = useQuery({
-    queryKey: ["resp"],
-    queryFn: async () => {
-      const response = await fetch("http://localhost:8080/auth", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const trueResp = await response.json();
-
-      return trueResp;
+  const mutation = useMutation({
+    mutationFn: api.login,
+    onSuccess: async (data) => {
+      console.log(data, "FOI BUCETA");
+    },
+    onError: (error) => {
+      console.log(`the post with title  Fail to be created`);
+      console.log(error);
     },
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ resp, isError, isPending });
+
+    mutation.mutate({ email, password });
   };
 
   return (
