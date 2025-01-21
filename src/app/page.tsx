@@ -7,16 +7,25 @@ import toast, { Toast } from "react-hot-toast";
 import { MdError } from "react-icons/md";
 import { AiOutlineLoading } from "react-icons/ai";
 import { IoMdClose } from "react-icons/io";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   const { mutate, isPending } = useMutation({
     mutationFn: api.login,
-    onSuccess: async (data) => {
-      console.log(data, "FOI BUCETA");
-      toast.success("SUCESSO");
+    onSuccess: (data) => {
+      const token = Cookies.get("jwtToken");
+
+      if (token) Cookies.remove("jwtToken");
+
+      Cookies.set("jwtToken", data.token, { expires: 1 }); // Expira em 1 dia
+
+      router.push("/sessions");
     },
     onError: (error, v) => {
       toast((t: Toast) => {

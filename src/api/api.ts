@@ -1,10 +1,6 @@
+import Cookies from "js-cookie";
+
 class Api {
-  private baseUrl: string;
-
-  constructor() {
-    this.baseUrl = "http://localhost:8080";
-  }
-
   public async login(data: {
     email: string;
     password: string;
@@ -17,6 +13,27 @@ class Api {
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+
+    const r = await response.json();
+
+    if (r.message) {
+      throw new Error(r.message);
+    }
+
+    return r;
+  }
+
+  public async getSessions(): Promise<any> {
+    const token = Cookies.get("jwtToken");
+
+    const response = await fetch(`http://localhost:8080/sessions?page=1`, {
+      method: "GET",
+
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `Bearer ${token}`,
       },
     });
 
