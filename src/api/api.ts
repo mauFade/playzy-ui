@@ -25,12 +25,12 @@ class Api {
     return r;
   }
 
-  public async getSessions(): Promise<any> {
+  public async getSessions(page = 1): Promise<any> {
     const token = Cookies.get("jwtToken");
+    const url = "http://localhost:8080/sessions?page=" + page;
 
-    const response = await fetch(`http://localhost:8080/sessions?page=1`, {
+    const response = await fetch(url, {
       method: "GET",
-
       headers: {
         "Content-type": "application/json; charset=UTF-8",
         Authorization: `Bearer ${token}`,
