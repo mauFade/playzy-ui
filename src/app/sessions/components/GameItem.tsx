@@ -16,7 +16,7 @@ interface GameItemProps {
 
 const GameItem = (props: GameItemProps) => {
   return (
-    <div className="w-full max-w-md md:max-w-xl lg:max-w-2xl bg-neutral-800 text-neutral-100 p-4 rounded-lg shadow-md mx-auto">
+    <div className="container bg-neutral-800 text-neutral-100 p-4 rounded-lg shadow-md mx-auto">
       <h2 className="text-xl font-bold">JOGO: {props.game}</h2>
       <p className="text-sm text-neutral-400">
         Objetivo: <span className="text-neutral-100">{props.objetive}</span>

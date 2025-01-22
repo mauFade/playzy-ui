@@ -33,16 +33,24 @@ const Sessions = () => {
     if (page < totalPages) setPage((prev) => prev + 1);
   };
 
+  const generatePageNumbers = () => {
+    const pages = [];
+    for (let i = page; i < page + 3 && i <= totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+
   return (
     <>
-      <div className="bg-gradient-to-br from-neutral-900 to-neutral-950 min-h-screen flex flex-col justify-center items-center w-full">
-        <h1 className="text-2xl font-bold mb-4">
+      <div className="bg-gradient-to-br from-neutral-900 to-neutral-600 min-h-screen flex flex-col justify-center items-center w-full">
+        <h1 className="text-2xl font-bold mb-4 w-full">
           {isPending ? (
             <p>LOADING...</p>
           ) : (
-            <div className="container mx-auto p-6">
+            <div className="container mx-auto p-6 flex">
               <h1 className="text-2xl font-bold text-neutral-200 mb-6">
-                Feed de Jogos
+                Sessões abertas
               </h1>
               <div className="flex flex-col">
                 {data.sessions.map((game: any) => (
@@ -65,6 +73,21 @@ const Sessions = () => {
           >
             <MdOutlineKeyboardDoubleArrowLeft />
           </button>
+
+          {generatePageNumbers().map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => setPage(pageNumber)}
+              className={`px-4 py-2 border border-neutral-200 rounded ${
+                pageNumber === page
+                  ? "bg-neutral-800 text-neutral-300"
+                  : "bg-white text-neutral-700 hover:bg-neutral-400"
+              }`}
+            >
+              {pageNumber}
+            </button>
+          ))}
+
           <button
             onClick={handleNext}
             disabled={page === totalPages}
