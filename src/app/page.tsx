@@ -56,9 +56,9 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center min-h-screen bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900">
-      <div className="bg-zinc-950 w-1/3"></div>
-      <div className="flex justify-center items-center bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 w-2/3">
+    <div className="flex justify-center min-h-screen">
+      <div className="bg-black w-1/3"></div>
+      <div className="flex justify-center items-center bg-gradient-to-br from-zinc-800 to-zinc-950 w-2/3">
         <div className="flex items-start flex-col space-y-3">
           <h1 className="font-bold text-4xl mb-5">Bem vindo</h1>
 
