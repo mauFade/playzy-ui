@@ -1,52 +1,54 @@
-import React, { useState } from "react";
+import React, { SetStateAction } from "react";
 import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
 
-const Carousel = () => {
-  const [page, setPage] = useState<number>(1);
-  const totalPages = 10;
+interface Props {
+  page: number;
+  totalPages: number;
+  setPage: (value: SetStateAction<number>) => void;
+}
 
+const Carousel = (props: Props) => {
   const handlePrev = () => {
-    if (page > 1) setPage((prev) => prev - 1);
+    if (props.page > 1) props.setPage((prev) => prev - 1);
   };
 
   const handleNext = () => {
-    console.log({ page: page + 1 });
-    if (page < totalPages) setPage((prev) => prev + 1);
+    if (props.page < props.totalPages) props.setPage((prev) => prev + 1);
   };
 
   const generatePageNumbers = () => {
     const pages = [];
-    for (let i = page; i < page + 3 && i <= totalPages; i++) {
+    for (let i = props.page; i < props.page + 3 && i <= props.totalPages; i++) {
       pages.push(i);
     }
     return pages;
   };
 
   return (
-    <div className="flex items-center gap-2 mt-4">
+    <div className="flex justify-center mt-8">
       <button
         onClick={handlePrev}
-        disabled={page === 1}
-        className={`px-4 py-2 border rounded ${
-          page === 1
-            ? "bg-neutral-200 text-neutral-400 cursor-not-allowed"
-            : "bg-neutral-200 text-neutral-700 hover:bg-neutral-400 hover:text-neutral-200"
+        disabled={props.page === 1}
+        className={`flex items-center px-4 py-2 border border-zinc-500 rounded-lg mx-2 transition-colors ${
+          props.page === 1
+            ? "bg-zinc-800 text-zinc-400 cursor-not-allowed"
+            : "bg-teal-500 text-zinc-100 hover:bg-teal-600"
         }`}
       >
-        <MdOutlineKeyboardDoubleArrowLeft />
+        <MdOutlineKeyboardDoubleArrowLeft className="text-xl" />
       </button>
 
       {generatePageNumbers().map((pageNumber) => (
         <button
           key={pageNumber}
-          onClick={() => setPage(pageNumber)}
-          className={`px-4 py-2 border border-neutral-200 rounded ${
-            pageNumber === page
-              ? "bg-neutral-800 text-neutral-300"
-              : "bg-white text-neutral-700 hover:bg-neutral-400"
+          onClick={() => props.setPage(pageNumber)}
+          className={`px-4 py-2 border border-zinc-500 rounded-lg mx-1 transition-colors ${
+            pageNumber === props.page
+              ? "bg-teal-500 text-zinc-100"
+              : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
           }`}
         >
           {pageNumber}
@@ -55,14 +57,14 @@ const Carousel = () => {
 
       <button
         onClick={handleNext}
-        disabled={page === totalPages}
-        className={`px-4 py-2 border rounded ${
-          page === totalPages
-            ? "bg-neutral-200 text-neutral-400 cursor-not-allowed"
-            : "bg-neutral-200 text-neutral-700 hover:bg-neutral-400 hover:text-neutral-200"
+        disabled={props.page === props.totalPages}
+        className={`flex items-center px-4 py-2 border border-zinc-500 rounded-lg mx-2 transition-colors ${
+          props.page === props.totalPages
+            ? "bg-zinc-800 text-zinc-400 cursor-not-allowed"
+            : "bg-teal-500 text-zinc-100 hover:bg-teal-600"
         }`}
       >
-        <MdOutlineKeyboardDoubleArrowRight />
+        <MdOutlineKeyboardDoubleArrowRight className="text-xl" />
       </button>
     </div>
   );
