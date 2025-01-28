@@ -8,6 +8,7 @@ import {
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
 import GameItem from "./components/GameItem";
+import { AiOutlineLoading } from "react-icons/ai";
 
 const fetchSessions = async (page: number) => {
   const response = await api.getSessions(page);
@@ -43,23 +44,20 @@ const Sessions = () => {
 
   return (
     <>
-      <div className="bg-gradient-to-br from-neutral-900 to-neutral-600 min-h-screen flex flex-col justify-center items-center w-full">
-        <h1 className="text-2xl font-bold mb-4 w-full">
-          {isPending ? (
-            <p>LOADING...</p>
-          ) : (
-            <div className="container mx-auto p-6 flex">
-              <h1 className="text-2xl font-bold text-neutral-200 mb-6">
-                Sessões abertas
-              </h1>
-              <div className="flex flex-col">
-                {data.sessions.map((game: any) => (
-                  <GameItem key={game.id} {...game} />
-                ))}
-              </div>
-            </div>
-          )}
-        </h1>
+      <div className="bg-gradient-to-br from-zinc-800 to-zinc-950 min-h-screen flex flex-col justify-center items-center w-full">
+        {isPending ? (
+          <AiOutlineLoading className="text-4xl animate-spin" />
+        ) : (
+          <div className="container mx-auto p-6 flex flex-col">
+            <h1 className="text-2xl font-bold text-neutral-200 mb-6">
+              Sessões abertas
+            </h1>
+
+            {data.sessions.map((game: any) => (
+              <GameItem key={game.id} {...game} />
+            ))}
+          </div>
+        )}
 
         <div className="flex flex-row">
           <button

@@ -8,14 +8,16 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { SlGameController } from "react-icons/sl";
 import { showToast } from "@/utils/showToast";
+import { AiOutlineLoading } from "react-icons/ai";
 
-export default function Login() {
+const Login = () => {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [wait, setWait] = useState(false);
 
-  const { mutate, isPending } = useMutation({
+  const mutation = useMutation({
     mutationFn: api.login,
     onSuccess: (data) => {
       const token = Cookies.get("jwtToken");
@@ -32,6 +34,8 @@ export default function Login() {
           ? "Senha incorreta, tente novamente."
           : `O e-mail ${v.email} não está vinculado à nenhuma conta`;
 
+      setWait(false);
+
       showToast(errorMessage, "error");
     },
   });
@@ -39,7 +43,8 @@ export default function Login() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    mutate({ email, password });
+    setWait(true);
+    mutation.mutate({ email, password });
   };
 
   return (
@@ -90,15 +95,21 @@ export default function Login() {
               />
             </div>
             <button
-              disabled={isPending}
+              disabled={wait}
               type="submit"
-              className="w-full bg-teal-600 hover:bg-teal-800 text-zinc-300 py-2 px-4 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-steel focus:ring-offset-2 disabled:bg-teal-950 disabled:cursor-not-allowed disabled:text-zinc-500"
+              className="flex justify-center items-center w-full bg-teal-600 hover:bg-teal-800 text-zinc-300 py-2 px-4 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-steel focus:ring-offset-2 disabled:bg-teal-950 disabled:cursor-not-allowed disabled:text-zinc-500"
             >
-              Login
+              {wait ? (
+                <AiOutlineLoading className="text-4xl animate-spin" />
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Login;

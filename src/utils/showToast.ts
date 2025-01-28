@@ -10,7 +10,13 @@ export const showToast = (
     success: "#63f106",
   };
 
-  toast.error(message, {
+  const toastFn = {
+    error: toast.error,
+    warn: toast,
+    success: toast.success,
+  }[messageType];
+
+  toastFn(message, {
     duration: 5000,
     style: {
       borderRadius: "8px",
