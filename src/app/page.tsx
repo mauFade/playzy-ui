@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { api } from "@/api/api";
 import toast, { Toast } from "react-hot-toast";
 import { MdError } from "react-icons/md";
@@ -10,11 +9,13 @@ import { IoMdClose } from "react-icons/io";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
-export default function Home() {
+import { useMutation } from "@tanstack/react-query";
+
+export default function Login() {
   const router = useRouter();
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const { mutate, isPending } = useMutation({
     mutationFn: api.login,
@@ -49,79 +50,61 @@ export default function Home() {
     },
   });
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
     mutate({ email, password });
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-neutral-900 to-neutral-950 p-8 text-gray-100 items-center justify-center w-full">
-      <div className="w-full max-w-md">
-        <div className="flex items-center justify-center mb-8 flex-col">
-          <span className="text-neutral-600 font-bold text-3xl">Playzy</span>
+    <div className="flex justify-center min-h-screen bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900">
+      <div className="bg-zinc-950 w-1/3"></div>
+      <div className="flex justify-center items-center bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 w-2/3">
+        <div className="flex items-start flex-col space-y-3">
+          <h1 className="font-bold text-4xl mb-5">Bem vindo</h1>
 
-          {isPending && (
-            <AiOutlineLoading className="text-4xl text-gray-400 animate-spin" />
-          )}
+          <form onSubmit={handleSubmit} className="space-y-8 min-w-96">
+            <div>
+              <label
+                htmlFor="email"
+                className="block mb-2 text-xs font-semibold text-teal-600 tracking-wide"
+              >
+                EMAIL
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 border-b border-teal-600 focus:outline-none bg-transparent"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block mb-2 text-xs font-semibold text-teal-600 tracking-wide"
+              >
+                PASSWORD
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 border-b border-teal-600 focus:outline-none bg-transparent"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-teal-600 hover:bg-teal-800 text-white py-2 px-4 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-steel focus:ring-offset-2"
+            >
+              Login
+            </button>
+          </form>
         </div>
-
-        <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-400"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(event) => {
-                setEmail(event.target.value);
-              }}
-              placeholder="Digite seu email"
-              className="w-full px-4 py-3 mt-1 bg-neutral-800 border border-gray-700 rounded-lg text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-600"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-400"
-            >
-              Senha
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
-              placeholder="Digite sua senha"
-              className="w-full px-4 py-3 mt-1 bg-neutral-800 border border-gray-700 rounded-lg text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-600"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full px-4 py-3 font-bold text-neutral-300 bg-neutral-800 rounded-lg hover:bg-neutral-600  focus:outline-none focus:ring-2 focus:ring-neutral-600"
-          >
-            Entrar
-          </button>
-        </form>
-
-        <p className="mt-4 text-center text-sm text-gray-500">
-          Não tem uma conta?{" "}
-          <Link
-            href="/register"
-            className="text-neutral-300 hover:underline font-medium"
-          >
-            Clique aqui
-          </Link>
-        </p>
       </div>
     </div>
   );
