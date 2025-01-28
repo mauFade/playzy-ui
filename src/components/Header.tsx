@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { FiBell, FiMenu, FiMessageCircle, FiSearch } from "react-icons/fi";
 import { SlGameController } from "react-icons/sl";
+import Menu from "./Menu";
 
 const Header = () => {
   const [hovered, setHovered] = useState<string | null>(null);
+  const [menuIsVisible, setMenuIsVisible] = useState<boolean>(false);
 
   const handleMouseEnter = (tooltip: string) => {
     setHovered(tooltip);
@@ -13,13 +15,18 @@ const Header = () => {
     setHovered(null);
   };
 
+  const toggleMenu = () => {
+    setMenuIsVisible(!menuIsVisible);
+  };
+
   return (
-    <header className="bg-zinc-800 text-zinc-100 h-16 hidden md:flex items-center px-4 shadow-md border-b border-zinc-500">
+    <header className="bg-zinc-800 text-zinc-100 h-16 hidden md:flex items-center px-4 shadow-md">
       <div className="flex items-center space-x-3">
         <button
           className="flex items-center p-3 rounded-3xl hover:bg-zinc-900 transition-colors"
           onMouseEnter={() => handleMouseEnter("Menu")}
           onMouseLeave={handleMouseLeave}
+          onClick={toggleMenu}
         >
           <FiMenu className="m-1 text-lg" />
           {hovered === "Menu" && (
@@ -27,6 +34,8 @@ const Header = () => {
               Menu
             </span>
           )}
+
+          {menuIsVisible && <Menu />}
         </button>
       </div>
 
