@@ -41,12 +41,10 @@ const Sessions = () => {
                 <AiOutlineLoading className="text-4xl text-teal-500 animate-spin" />
               </div>
             ) : (
-              <div className=" gap-6">
-                {data &&
-                  data.sessions.map((game: any) => (
-                    <SessionItem key={game.id} {...game} />
-                  ))}
-              </div>
+              data &&
+              data.sessions.map((game: any) => (
+                <SessionItem key={game.id} {...game} />
+              ))
             )}
 
             <Carousel
