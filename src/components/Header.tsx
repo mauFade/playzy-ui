@@ -20,7 +20,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-zinc-800 text-zinc-100 h-16 hidden md:flex items-center px-4 shadow-md fixed right-0 left-0">
+    <header className="bg-zinc-800 text-zinc-100 h-14 hidden md:flex items-center px-4 shadow-md fixed right-0 left-0">
       <div className="flex items-center space-x-3">
         <button
           className="flex items-center p-3 rounded-3xl hover:bg-zinc-900 transition-colors"
