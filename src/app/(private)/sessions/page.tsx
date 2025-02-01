@@ -3,10 +3,6 @@
 import { api } from "@/api/api";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import {
-  MdOutlineKeyboardDoubleArrowLeft,
-  MdOutlineKeyboardDoubleArrowRight,
-} from "react-icons/md";
 import SessionItem from "./components/SessionItem";
 import { AiOutlineLoading } from "react-icons/ai";
 import Carousel from "@/components/Carousel";
