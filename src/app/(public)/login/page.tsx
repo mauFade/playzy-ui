@@ -2,29 +2,26 @@
 
 import { FormEvent, useState } from "react";
 import { api } from "@/api/api";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
 import { useMutation } from "@tanstack/react-query";
 import { SlGameController } from "react-icons/sl";
 import { showToast } from "@/utils/showToast";
 import { AiOutlineLoading } from "react-icons/ai";
+import { cookies } from "next/headers";
 
 const Login = () => {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [wait, setWait] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [wait, setWait] = useState<boolean>(false);
 
   const mutation = useMutation({
     mutationFn: api.login,
-    onSuccess: (data) => {
-      const token = Cookies.get("jwtToken");
-
-      if (token) Cookies.remove("jwtToken");
-
-      Cookies.set("jwtToken", data.token, { expires: 1 }); // Expira em 1 dia
+    onSuccess: async (data) => {
+      const cookieStore = await cookies();
+      cookieStore.set("jwtToken", data.token);
 
       router.push("/sessions");
     },
