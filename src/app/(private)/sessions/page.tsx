@@ -36,11 +36,14 @@ const Sessions = () => {
               <div className="flex justify-center items-center">
                 <AiOutlineLoading className="text-4xl text-teal-500 animate-spin" />
               </div>
-            ) : (
-              data &&
-              data.sessions.map((game: any) => (
+            ) : data ? (
+              data.sessions.map((game) => (
                 <SessionItem key={game.id} {...game} />
               ))
+            ) : (
+              <div className="flex justify-center items-center">
+                <AiOutlineLoading className="text-4xl text-teal-500 animate-spin" />
+              </div>
             )}
 
             <Carousel
