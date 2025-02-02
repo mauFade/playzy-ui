@@ -13,6 +13,8 @@ export function middleware(r: NextRequest) {
   const publicRoute = publicRoutes.find((r) => r.path === path);
   const token = r.cookies.get("jwtToken");
 
+  console.log({ token });
+
   const redirectUrl = r.nextUrl.clone();
 
   redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED;

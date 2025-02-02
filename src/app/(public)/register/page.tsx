@@ -4,7 +4,7 @@ import { api } from "@/api/api";
 import { showToast } from "@/utils/showToast";
 import { useMutation } from "@tanstack/react-query";
 import { setCookie } from "cookies-next";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { SlGameController } from "react-icons/sl";
@@ -49,7 +49,9 @@ const Register = () => {
       </div>
       <div className="flex justify-center items-center bg-gradient-to-br from-zinc-800 to-zinc-950 w-full md:w-2/3">
         <div className="flex items-start flex-col space-y-3">
-          <h1 className="font-bold text-4xl mb-5">Bem vindo</h1>
+          <h1 className="font-bold text-4xl mb-5 text-teal-700">
+            Você está prestes a achar alguém pra jogar!
+          </h1>
 
           <form
             onSubmit={handleSubmit}
