@@ -1,5 +1,5 @@
-import Cookies from "js-cookie";
 import { SessionPageResponse } from "./dto/sessions";
+import { getCookie } from "cookies-next";
 
 class Api {
   public async login(data: {
@@ -27,7 +27,8 @@ class Api {
   }
 
   public async getSessions(page = 1): Promise<SessionPageResponse> {
-    const token = Cookies.get("jwtToken");
+    const token = getCookie("jwtToken");
+
     const url = "http://localhost:8080/sessions?page=" + page;
 
     const response = await fetch(url, {

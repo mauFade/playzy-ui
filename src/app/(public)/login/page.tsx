@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { SlGameController } from "react-icons/sl";
 import { showToast } from "@/utils/showToast";
 import { AiOutlineLoading } from "react-icons/ai";
-import { cookies } from "next/headers";
+import { setCookie } from "cookies-next";
 
 const Login = () => {
   const router = useRouter();
@@ -20,8 +20,7 @@ const Login = () => {
   const mutation = useMutation({
     mutationFn: api.login,
     onSuccess: async (data) => {
-      const cookieStore = await cookies();
-      cookieStore.set("jwtToken", data.token);
+      setCookie("jwtToken", data.token);
 
       router.push("/sessions");
     },
@@ -51,7 +50,7 @@ const Login = () => {
       </div>
       <div className="flex justify-center items-center bg-gradient-to-br from-zinc-800 to-zinc-950 w-full md:w-2/3">
         <div className="flex items-start flex-col space-y-3">
-          <h1 className="font-bold text-4xl mb-5">Bem vindo</h1>
+          <h1 className="font-bold text-4xl mb-5 text-teal-700">Bem vindo</h1>
 
           <form
             onSubmit={handleSubmit}
@@ -69,7 +68,7 @@ const Login = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border-b border-teal-600 focus:outline-none bg-transparent"
+                className="w-full px-4 py-2 border-b border-teal-600 focus:outline-none bg-transparent text-teal-100"
                 placeholder="Endereço de email"
                 required
               />
@@ -86,7 +85,7 @@ const Login = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border-b border-teal-600 focus:outline-none bg-transparent"
+                className="w-full px-4 py-2 border-b border-teal-600 focus:outline-none bg-transparent text-teal-100"
                 placeholder="Senha"
                 required
               />

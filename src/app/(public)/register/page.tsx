@@ -2,12 +2,12 @@
 
 import { api } from "@/api/api";
 import { showToast } from "@/utils/showToast";
-import { cookies } from "next/headers";
+import { useMutation } from "@tanstack/react-query";
+import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { SlGameController } from "react-icons/sl";
-import { useMutation } from "react-query";
 
 const Register = () => {
   const router = useRouter();
@@ -19,8 +19,7 @@ const Register = () => {
   const mutation = useMutation({
     mutationFn: api.login,
     onSuccess: async (data) => {
-      const cookieStore = await cookies();
-      cookieStore.set("jwtToken", data.token);
+      setCookie("jwtToken", data.token);
 
       router.push("/sessions");
     },
