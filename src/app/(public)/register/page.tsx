@@ -1,13 +1,14 @@
 "use client";
 
-import { api } from "@/api/api";
-import { showToast } from "@/utils/showToast";
 import { useMutation } from "@tanstack/react-query";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { SlGameController } from "react-icons/sl";
+
+import { api } from "@/api/api";
+import { showToast } from "@/utils/showToast";
 
 const Register = () => {
   const router = useRouter();
