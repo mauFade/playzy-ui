@@ -46,6 +46,8 @@ const eslintConfig = [
         "warn",
         { vars: "all", args: "after-used", ignoreRestSiblings: true },
       ],
+
+      "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
 ];

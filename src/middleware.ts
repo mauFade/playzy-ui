@@ -1,5 +1,5 @@
-import { MiddlewareConfig, NextRequest, NextResponse } from "next/server";
 import { jwtDecode } from "jwt-decode";
+import { MiddlewareConfig, NextRequest, NextResponse } from "next/server";
 
 const REDIRECT_WHEN_NOT_AUTHENTICATED = "/login";
 
@@ -12,8 +12,6 @@ export function middleware(r: NextRequest) {
   const path = r.nextUrl.pathname;
   const publicRoute = publicRoutes.find((r) => r.path === path);
   const token = r.cookies.get("jwtToken");
-
-  console.log({ token });
 
   const redirectUrl = r.nextUrl.clone();
 

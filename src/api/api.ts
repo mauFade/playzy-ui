@@ -13,8 +13,7 @@ class Api {
     const response = await fetch("http://localhost:8080/auth", {
       method: "POST",
       body: JSON.stringify({
-        email: data.email,
-        password: data.password,
+        ...data,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -58,11 +57,7 @@ class Api {
     const response = await fetch("http://localhost:8080/users", {
       method: "POST",
       body: JSON.stringify({
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        password: data.password,
-        gamertag: data.gamertag,
+        ...data,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
