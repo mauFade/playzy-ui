@@ -1,14 +1,15 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { api } from "@/api/api";
-import { useRouter } from "next/navigation";
-
 import { useMutation } from "@tanstack/react-query";
-import { SlGameController } from "react-icons/sl";
-import { showToast } from "@/utils/showToast";
-import { AiOutlineLoading } from "react-icons/ai";
 import { setCookie } from "cookies-next";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { AiOutlineLoading } from "react-icons/ai";
+import { SlGameController } from "react-icons/sl";
+
+import { api } from "@/api/api";
+import { showToast } from "@/utils/showToast";
 
 const Login = () => {
   const router = useRouter();
@@ -101,6 +102,15 @@ const Login = () => {
                 "Login"
               )}
             </button>
+            <p className="text-teal-100 tracking-wide">
+              Não tem uma conta?{" "}
+              <Link
+                href="/register"
+                className="hover:font-medium hover:border-b transition-colors"
+              >
+                Registre-se
+              </Link>
+            </p>
           </form>
         </div>
       </div>
