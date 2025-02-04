@@ -30,16 +30,17 @@ export function middleware(r: NextRequest) {
   // Rota é privata, está autenticado, verificar validade do token
   if (!publicRoute && token) {
     const decodedToken = jwtDecode(token.value);
+
     const exp = decodedToken.exp;
 
     if (!exp) {
       return NextResponse.redirect(redirectUrl);
     }
 
-    const expiredDate = new Date(decodedToken.exp!);
+    const expiredDate = new Date(decodedToken.exp! * 1000);
 
     // Token está expirado, redirecionar para tela de login
-    if (expiredDate.getTime() > Date.now()) {
+    if (Date.now() > expiredDate.getTime()) {
       return NextResponse.redirect(redirectUrl);
     }
 

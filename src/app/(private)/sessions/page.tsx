@@ -1,13 +1,15 @@
 "use client";
 
-import { api } from "@/api/api";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import SessionItem from "./components/SessionItem";
 import { AiOutlineLoading } from "react-icons/ai";
+
+import { api } from "@/api/api";
 import Carousel from "@/components/Carousel";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+
+import SessionItem from "./components/SessionItem";
 
 const fetchSessions = async (page: number) => {
   const response = await api.getSessions(page);

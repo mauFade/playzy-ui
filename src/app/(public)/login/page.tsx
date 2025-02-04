@@ -102,11 +102,11 @@ const Login = () => {
                 "Login"
               )}
             </button>
-            <p className="text-teal-100 tracking-wide">
+            <p className="text-teal-600 font-light tracking-wide text-center">
               Não tem uma conta?{" "}
               <Link
                 href="/register"
-                className="hover:font-medium hover:border-b transition-colors"
+                className="hover:font-medium font-normal hover:border-b transition-colors"
               >
                 Registre-se
               </Link>

@@ -17,6 +17,7 @@ export interface CreateUserInterface {
 }
 
 export interface CreateUserResponseInterface {
+  token: string;
   id: string;
   name: string;
   email: string;
