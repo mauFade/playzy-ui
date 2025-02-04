@@ -45,7 +45,28 @@ export function middleware(r: NextRequest) {
     }
 
     // Rota privata, com autenticação e token ainda válido
-    return NextResponse.redirect(r.nextUrl);
+    return NextResponse.next();
+  }
+
+  // Rota é publica, está autenticado
+  if (token && publicRoute) {
+    const decodedToken = jwtDecode(token.value);
+
+    const exp = decodedToken.exp;
+
+    if (!exp) {
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    const expiredDate = new Date(decodedToken.exp! * 1000);
+
+    if (Date.now() > expiredDate.getTime()) {
+      return NextResponse.redirect(redirectUrl);
+    } else {
+      redirectUrl.pathname = "/sessions";
+
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 }
 

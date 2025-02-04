@@ -1,6 +1,10 @@
+"use client";
+
+import Image from "next/image";
 import React, { useState } from "react";
 import { FiBell, FiMenu, FiMessageCircle, FiSearch } from "react-icons/fi";
 import { SlGameController } from "react-icons/sl";
+
 import Menu from "./Menu";
 
 const Header = () => {
@@ -63,10 +67,12 @@ const Header = () => {
           <FiMessageCircle className="text-lg cursor-pointer hover:text-zinc-400 transition-colors" />
         </div>
         <div className="flex items-center space-x-2 hover:bg-zinc-900 p-2 rounded-3xl cursor-pointer">
-          <img
+          <Image
             src="https://i.pinimg.com/736x/6e/27/e4/6e27e43f5e02954d08e0bd3be06f7242.jpg"
             alt="Profile"
             className="w-8 h-8 rounded-full"
+            width={20}
+            height={20}
           />
           <span className="text-sm">maucardsm</span>
         </div>
