@@ -106,7 +106,7 @@ const Login = () => {
               Não tem uma conta?{" "}
               <Link
                 href="/register"
-                className="hover:font-medium font-normal hover:border-b transition-colors"
+                className="hover:font-medium font-normal hover:border-b transition-colors border-teal-600"
               >
                 Registre-se
               </Link>

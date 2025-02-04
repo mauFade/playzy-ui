@@ -43,7 +43,13 @@ const Register = () => {
     e.preventDefault();
 
     setWait(true);
-    mutation.mutate({ email, password, gamertag, name, phone });
+
+    if (password !== confirmPassword) {
+      showToast("As senhas não coincidem!", "error");
+      setWait(false);
+    } else {
+      mutation.mutate({ email, password, gamertag, name, phone });
+    }
   };
 
   return (
@@ -92,7 +98,7 @@ const Register = () => {
           />
           <Input
             id="confirmPassword"
-            type="confirmPassword"
+            type="password"
             placeholder="Confirme sua senha"
             label="Confirme sua senha"
             value={confirmPassword}
@@ -110,7 +116,7 @@ const Register = () => {
           />
           <button
             type="submit"
-            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition"
+            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition flex justify-center items-center"
           >
             {wait ? (
               <AiOutlineLoading className="text-4xl animate-spin" />
@@ -124,7 +130,7 @@ const Register = () => {
           Já tem uma conta?{" "}
           <Link
             href="/login"
-            className="hover:font-medium font-normal hover:border-b transition-colors"
+            className="hover:font-medium font-normal hover:border-b border-teal-600 transition-colors"
           >
             Faça login
           </Link>
