@@ -24,7 +24,7 @@ const Input = (props: PropsInterface) => {
         type={props.type}
         value={props.value}
         onChange={props.setValue}
-        className="w-full py-2 border-b border-teal-600 focus:outline-none bg-transparent text-teal-50 mb-4 autofill:bg-transparent"
+        className="w-full py-2 border-b border-teal-600 focus:outline-none bg-transparent text-teal-50 mb-8 autofill:bg-transparent"
         placeholder={props.placeholder}
         required={props.required}
       />

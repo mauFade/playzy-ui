@@ -5,9 +5,9 @@ import { setCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
-import { AiOutlineLoading } from "react-icons/ai";
 
 import { api } from "@/api/api";
+import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { errorMessages } from "@/utils/errorMessages";
 import { showToast } from "@/utils/showToast";
@@ -25,7 +25,7 @@ const Register = () => {
 
   const mutation = useMutation({
     mutationFn: api.createUser,
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       setCookie("jwtToken", data.token);
 
       router.push("/sessions");
@@ -59,7 +59,7 @@ const Register = () => {
           Crie sua conta
         </h2>
         <hr className="border-zinc-500 my-6" />
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="mt-2">
           <Input
             id="name"
             type="text"
@@ -114,16 +114,9 @@ const Register = () => {
             required={true}
             setValue={(e) => setGamertag(e.target.value)}
           />
-          <button
-            type="submit"
-            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition flex justify-center items-center"
-          >
-            {wait ? (
-              <AiOutlineLoading className="text-4xl animate-spin" />
-            ) : (
-              "Criar conta"
-            )}
-          </button>
+          <div className="w-full flex justify-center">
+            <Button content="Criar conta" isLoading={wait} type="submit" />
+          </div>
         </form>
         <hr className="border-zinc-500 my-6" />
         <p className="text-teal-600 font-light tracking-wide text-center">
