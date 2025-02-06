@@ -3,9 +3,19 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import { FiBell, FiMessageCircle, FiSearch } from "react-icons/fi";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@heroui/react";
 
 const Header = () => {
   const [hovered, setHovered] = useState<string | null>(null);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const handleMouseEnter = (tooltip: string) => {
     setHovered(tooltip);
@@ -58,7 +68,10 @@ const Header = () => {
             </span>
           )}
         </div>
-        <div className="flex items-center space-x-2 hover:bg-zinc-900 p-2 rounded-3xl cursor-pointer">
+        <div
+          className="flex items-center space-x-2 hover:bg-zinc-900 p-2 rounded-3xl cursor-pointer"
+          onClick={onOpen}
+        >
           <Image
             src="https://i.pinimg.com/736x/6e/27/e4/6e27e43f5e02954d08e0bd3be06f7242.jpg"
             alt="Profile"
@@ -68,6 +81,39 @@ const Header = () => {
           />
           <span className="text-sm">maucardsm</span>
         </div>
+
+        {/* Modal */}
+        {isOpen && (
+          <Modal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            placement="top"
+            className="bg-white mt-10"
+          >
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">
+                    Menu
+                  </ModalHeader>
+                  <ModalBody></ModalBody>
+                  <ModalFooter>
+                    <Button
+                      variant="shadow"
+                      onPress={onClose}
+                      className="bg-red-500"
+                    >
+                      Close
+                    </Button>
+                    <Button color="primary" onPress={onClose}>
+                      Action
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+        )}
       </div>
     </header>
   );
