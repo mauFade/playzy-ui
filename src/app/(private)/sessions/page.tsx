@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 
 import { api } from "@/api/api";
+import { SessionInterface } from "@/api/dto/sessions";
 import Carousel from "@/components/Carousel";
 
 import SessionItem from "./components/SessionItem";
@@ -17,10 +18,16 @@ const fetchSessions = async (page: number) => {
 const Sessions = () => {
   const [page, setPage] = useState<number>(1);
 
-  const { isPending, data } = useQuery({
+  const { data } = useQuery({
     queryKey: ["sessions", page],
     queryFn: () => fetchSessions(page),
   });
+
+  let sessionsFetch: SessionInterface[] = [];
+
+  if (data) {
+    sessionsFetch = data.sessions;
+  }
 
   return (
     <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 min-h-screen flex flex-col">
@@ -30,12 +37,8 @@ const Sessions = () => {
             Sessões Abertas
           </h1>
 
-          {isPending ? (
-            <div className="flex justify-center items-center">
-              <AiOutlineLoading className="text-4xl text-teal-500 animate-spin" />
-            </div>
-          ) : data ? (
-            data.sessions.map((game) => <SessionItem key={game.id} {...game} />)
+          {sessionsFetch.length ? (
+            sessionsFetch.map((game) => <SessionItem key={game.id} {...game} />)
           ) : (
             <div className="flex justify-center items-center">
               <AiOutlineLoading className="text-4xl text-teal-500 animate-spin" />

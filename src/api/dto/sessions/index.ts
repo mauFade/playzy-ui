@@ -1,4 +1,4 @@
-export interface Session {
+export interface SessionInterface {
   id: string;
   game: string;
   objetive: string;
@@ -15,8 +15,8 @@ export interface Session {
   };
 }
 
-export interface SessionPageResponse {
+export interface SessionPageResponseInterface {
   page: number;
   total_pages: number;
-  sessions: Session[];
+  sessions: SessionInterface[];
 }

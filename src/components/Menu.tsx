@@ -1,7 +1,11 @@
 import React from "react";
 
 const Menu = () => {
-  return <div className="bg-red-500 absolute top-16 ml-8 min-w-96">Menu</div>;
+  return (
+    <div className="bg-zinc-800 absolute top-16 w-1/2 h-56 rounded-xl">
+      Menu
+    </div>
+  );
 };
 
 export default Menu;

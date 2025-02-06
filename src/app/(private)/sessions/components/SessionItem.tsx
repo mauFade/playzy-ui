@@ -1,9 +1,10 @@
-import { Session } from "@/api/dto/sessions";
-import Tooltip from "@/components/Tooltip";
 import Image from "next/image";
 import React from "react";
 
-const SessionItem = (props: Session) => {
+import { SessionInterface } from "@/api/dto/sessions";
+import Tooltip from "@/components/Tooltip";
+
+const SessionItem = (props: SessionInterface) => {
   return (
     <div className="bg-zinc-900 text-zinc-100 p-6 rounded-3xl shadow-lg flex flex-col justify-between hover:shadow-2xl transition-shadow hover:bg-zinc-950 mb-3 lg:flex lg:flex-row lg:space-x-6 lg:items-center lg:max-h-20">
       <div className="relative group">

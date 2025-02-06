@@ -1,6 +1,6 @@
 import { getCookie } from "cookies-next";
 
-import { SessionPageResponse } from "./dto/sessions";
+import { SessionPageResponseInterface } from "./dto/sessions";
 import {
   CreateUserInterface,
   CreateUserResponseInterface,
@@ -29,7 +29,7 @@ class Api {
     return r;
   }
 
-  public async getSessions(page = 1): Promise<SessionPageResponse> {
+  public async getSessions(page = 1): Promise<SessionPageResponseInterface> {
     const token = getCookie("jwtToken");
 
     const url = "http://localhost:8080/sessions?page=" + page;

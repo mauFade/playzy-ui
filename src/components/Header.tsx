@@ -2,14 +2,10 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
-import { FiBell, FiMenu, FiMessageCircle, FiSearch } from "react-icons/fi";
-import { SlGameController } from "react-icons/sl";
-
-import Menu from "./Menu";
+import { FiBell, FiMessageCircle, FiSearch } from "react-icons/fi";
 
 const Header = () => {
   const [hovered, setHovered] = useState<string | null>(null);
-  const [menuIsVisible, setMenuIsVisible] = useState<boolean>(false);
 
   const handleMouseEnter = (tooltip: string) => {
     setHovered(tooltip);
@@ -19,35 +15,13 @@ const Header = () => {
     setHovered(null);
   };
 
-  const toggleMenu = () => {
-    setMenuIsVisible(!menuIsVisible);
-  };
-
   return (
     <header className="bg-zinc-800 text-zinc-100 h-14 hidden md:flex items-center px-4 shadow-md fixed right-0 left-0">
-      <div className="flex items-center space-x-3">
-        <button
-          className="flex items-center p-3 rounded-3xl hover:bg-zinc-900 transition-colors"
-          onMouseEnter={() => handleMouseEnter("Menu")}
-          onMouseLeave={handleMouseLeave}
-          onClick={toggleMenu}
-        >
-          <FiMenu className="m-1 text-lg" />
-          {hovered === "Menu" && (
-            <span className="text-zinc-400 text-base shadow-lg px-1 font-semibold tracking-wide">
-              Menu
-            </span>
-          )}
-
-          {menuIsVisible && <Menu />}
-        </button>
-      </div>
+      <div className="flex items-center space-x-3"></div>
 
       <div className="flex-grow"></div>
 
       <div className="flex items-center space-x-4">
-        <SlGameController className="text-teal-500 text-2xl" />
-
         <div
           className="p-2 hover:bg-zinc-900 rounded-3xl"
           onMouseEnter={() => handleMouseEnter("Busca")}
@@ -60,11 +34,29 @@ const Header = () => {
             </span>
           )}
         </div>
-        <div className="p-2 hover:bg-zinc-900 rounded-3xl">
+        <div
+          className="p-2 hover:bg-zinc-900 rounded-3xl"
+          onMouseEnter={() => handleMouseEnter("Notificações")}
+          onMouseLeave={handleMouseLeave}
+        >
           <FiBell className="text-lg cursor-pointer hover:text-zinc-400 transition-colors" />
+          {hovered === "Notificações" && (
+            <span className="absolute top-14 -translate-x-1/2 bg-zinc-700 text-white text-xs rounded px-2 py-1 shadow-lg">
+              Notificações
+            </span>
+          )}
         </div>
-        <div className="p-2 hover:bg-zinc-900 rounded-3xl">
+        <div
+          className="p-2 hover:bg-zinc-900 rounded-3xl"
+          onMouseEnter={() => handleMouseEnter("Mensagens")}
+          onMouseLeave={handleMouseLeave}
+        >
           <FiMessageCircle className="text-lg cursor-pointer hover:text-zinc-400 transition-colors" />
+          {hovered === "Mensagens" && (
+            <span className="absolute top-14 -translate-x-1/2 bg-zinc-700 text-white text-xs rounded px-2 py-1 shadow-lg">
+              Mensagens
+            </span>
+          )}
         </div>
         <div className="flex items-center space-x-2 hover:bg-zinc-900 p-2 rounded-3xl cursor-pointer">
           <Image
