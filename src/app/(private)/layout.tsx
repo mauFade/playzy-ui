@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import ReactQueryProvider from "@configs/ReactQueryProvider";
 
 const openSans = Open_Sans({
-  variable: "--font-geist-mono",
+  variable: "--font-open-sans",
   subsets: ["latin"],
 });
 
@@ -32,7 +32,7 @@ export default function PrivateLayout({
       >
         <ReactQueryProvider>
           <Header />
-          <Toaster position="bottom-left" />
+          {/* <Toaster position="bottom-left" /> */}
           {children}
         </ReactQueryProvider>
       </body>

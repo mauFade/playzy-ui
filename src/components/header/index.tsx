@@ -1,13 +1,5 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import {
-  Home,
-  LogOut,
-  Package,
-  PanelBottom,
-  Settings2,
-  ShoppingBag,
-  Users,
-} from "lucide-react";
+import { Home, LogOut, Package, PanelBottom, Settings2 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -43,53 +35,11 @@ const Header = () => {
               <TooltipContent side="right">Início</TooltipContent>
             </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href="#"
-                  className="flex w-9 h-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <ShoppingBag className="w-5 h-5" />
-                  <span className="sr-only">Pedidos</span>
-                </Link>
-              </TooltipTrigger>
-
-              <TooltipContent side="right">Pedidos</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href="#"
-                  className="flex w-9 h-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <Package className="w-5 h-5" />
-                  <span className="sr-only">Produtos</span>
-                </Link>
-              </TooltipTrigger>
-
-              <TooltipContent side="right">Produtos</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href="#"
-                  className="flex w-9 h-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <Users className="w-5 h-5" />
-                  <span className="sr-only">Clientes</span>
-                </Link>
-              </TooltipTrigger>
-
-              <TooltipContent side="right">Clientes</TooltipContent>
-            </Tooltip>
-
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
-                    href="#"
+                    href="/settings"
                     className="flex w-9 h-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
                   >
                     <Settings2 className="w-5 h-5" />
@@ -126,9 +76,13 @@ const Header = () => {
         <header className="sticky top-0 z-30 flex h-14 items-center px-4 border-b bg-background gap-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Sheet>
             <SheetTrigger asChild>
-              <Button size="icon" variant="outline" className="sm:hidden">
+              <Button
+                size="icon"
+                variant="outline"
+                className="sm:hidden rounded-lg"
+              >
                 <PanelBottom className="w-5 h-5" />
-                <span className="sr-only">Open / Close menu</span>
+                <span className="sr-only">Abrir\Fechar menu</span>
               </Button>
             </SheetTrigger>
 
@@ -146,7 +100,7 @@ const Header = () => {
                 </Link>
 
                 <Link
-                  href="#"
+                  href="/sessions"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                   prefetch={false}
                 >
@@ -155,34 +109,7 @@ const Header = () => {
                 </Link>
 
                 <Link
-                  href="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                  prefetch={false}
-                >
-                  <ShoppingBag className="w-5 h-5 transition-all" />
-                  Pedidos
-                </Link>
-
-                <Link
-                  href="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                  prefetch={false}
-                >
-                  <Package className="w-5 h-5 transition-all" />
-                  Produtos
-                </Link>
-
-                <Link
-                  href="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                  prefetch={false}
-                >
-                  <Users className="w-5 h-5 transition-all" />
-                  Clientes
-                </Link>
-
-                <Link
-                  href="#"
+                  href="/settings"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                   prefetch={false}
                 >
