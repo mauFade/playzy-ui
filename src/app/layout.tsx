@@ -3,12 +3,12 @@ import "./globals.css";
 import { Open_Sans } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 
+import { cn } from "@/lib/utils";
 import ReactQueryProvider from "@configs/ReactQueryProvider";
 
 const openSans = Open_Sans({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  variable: "--font-open-sans",
 });
 
 export const metadata: Metadata = {
@@ -23,7 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${openSans.variable} font-sans`}>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          openSans.className
+        )}
+      >
         <ReactQueryProvider>
           <Toaster position="bottom-left" />
           {children}
