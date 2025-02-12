@@ -5,10 +5,10 @@ import { setCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { AiOutlineLoading } from "react-icons/ai";
 import { SlGameController } from "react-icons/sl";
 
 import { api } from "@/api/api";
-import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { showToast } from "@/utils/showToast";
 
@@ -75,7 +75,16 @@ const Login = () => {
               required
             />
             <div className="w-full flex justify-center">
-              <Button content="Login" isLoading={wait} type="submit" />
+              <button
+                type="submit"
+                className="w-36 bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition flex justify-center items-center"
+              >
+                {wait ? (
+                  <AiOutlineLoading className="text-4xl animate-spin" />
+                ) : (
+                  "Login"
+                )}
+              </button>
             </div>
           </form>
 

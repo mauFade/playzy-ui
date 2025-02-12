@@ -1,19 +1,78 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { Gamepad2, LoaderCircle, Minus, Plus } from "lucide-react";
 import React, { useState } from "react";
-import { AiOutlineLoading } from "react-icons/ai";
+import { Bar, BarChart, ResponsiveContainer } from "recharts";
 
 import { api } from "@/api/api";
-import { SessionInterface } from "@/api/dto/sessions";
-import Carousel from "@/components/Carousel";
-
-import SessionItem from "./components/SessionItem";
+import Carousel from "@/components/carousel";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 const fetchSessions = async (page: number) => {
   const response = await api.getSessions(page);
   return response;
 };
+
+const chartData = [
+  {
+    goal: 400,
+  },
+  {
+    goal: 300,
+  },
+  {
+    goal: 200,
+  },
+  {
+    goal: 300,
+  },
+  {
+    goal: 200,
+  },
+  {
+    goal: 278,
+  },
+  {
+    goal: 189,
+  },
+  {
+    goal: 239,
+  },
+  {
+    goal: 300,
+  },
+  {
+    goal: 200,
+  },
+  {
+    goal: 278,
+  },
+  {
+    goal: 189,
+  },
+  {
+    goal: 349,
+  },
+];
 
 const Sessions = () => {
   const [page, setPage] = useState<number>(1);
@@ -23,36 +82,153 @@ const Sessions = () => {
     queryFn: () => fetchSessions(page),
   });
 
-  let sessionsFetch: SessionInterface[] = [];
+  const [goal, setGoal] = React.useState(350);
 
-  if (data) {
-    sessionsFetch = data.sessions;
+  function onClick(adjustment: number) {
+    setGoal(Math.max(200, Math.min(400, goal + adjustment)));
   }
 
   return (
-    <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 min-h-screen flex flex-col">
-      <main className="flex-1 flex flex-col items-center py-10 md:mt-12">
-        <div className="container mx-auto px-6">
-          <h1 className="text-3xl font-extrabold text-teal-500 mb-6 text-center">
-            Sessões Abertas
-          </h1>
+    <main className="sm:ml-14 p-4 space-y-4">
+      <h1 className="font-bold text-center">Sessions</h1>
 
-          {sessionsFetch.length ? (
-            sessionsFetch.map((game) => <SessionItem key={game.id} {...game} />)
-          ) : (
-            <div className="flex justify-center items-center">
-              <AiOutlineLoading className="text-4xl text-teal-500 animate-spin" />
-            </div>
-          )}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {data ? (
+          data.sessions.map((session, i) => (
+            <Card key={i}>
+              <CardHeader>
+                <div className="flex items-center justify-center">
+                  <CardTitle className="text-lg sm:text-xl select-none">
+                    {session.game}
+                  </CardTitle>
 
-          <Carousel
-            page={page}
-            setPage={setPage}
-            totalPages={data ? data.total_pages : 100}
-          />
-        </div>
-      </main>
-    </div>
+                  <Gamepad2 className="ml-auto w-6 h-6" />
+                </div>
+
+                <CardDescription>
+                  Sessão de jogo criada por:{" "}
+                  <span className="text-base sm:text-lg font-bold">
+                    {session.user.gamertag}
+                  </span>
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-1">
+                <p>
+                  Modo de jogo:{" "}
+                  <span className="text-base sm:text-lg font-bold">
+                    {session.is_ranked ? "Ranked" : "Casual"}
+                  </span>
+                </p>
+                {session.rank && (
+                  <p>
+                    Ranque:{" "}
+                    <span className="text-base sm:text-lg font-bold">
+                      {session.rank}
+                    </span>
+                  </p>
+                )}
+
+                <p>
+                  Objetivo:{" "}
+                  <span className="text-base sm:text-lg font-bold">
+                    {session.objetive}
+                  </span>
+                </p>
+
+                <p className="sm:text-sm text-gray-400">
+                  Data:{" "}
+                  {new Date(session.created_at)
+                    .toLocaleDateString("pt-BR")
+                    .split("/")
+                    .join("-")}
+                </p>
+              </CardContent>
+
+              <CardFooter>
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <Button>Bora jogar!</Button>
+                  </DrawerTrigger>
+
+                  <DrawerContent>
+                    <div className="mx-auto w-full max-w-sm">
+                      <DrawerHeader>
+                        <DrawerTitle>Move Goal</DrawerTitle>
+                        <DrawerDescription>
+                          Set your daily activity goal.
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <div className="p-4 pb-0">
+                        <div className="flex items-center justify-center space-x-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 shrink-0 rounded-full"
+                            onClick={() => onClick(-10)}
+                            disabled={goal <= 200}
+                          >
+                            <Minus />
+                            <span className="sr-only">Decrease</span>
+                          </Button>
+                          <div className="flex-1 text-center">
+                            <div className="text-7xl font-bold tracking-tighter">
+                              {goal}
+                            </div>
+                            <div className="text-[0.70rem] uppercase text-muted-foreground">
+                              Calories/day
+                            </div>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 shrink-0 rounded-full"
+                            onClick={() => onClick(10)}
+                            disabled={goal >= 400}
+                          >
+                            <Plus />
+                            <span className="sr-only">Increase</span>
+                          </Button>
+                        </div>
+                        <div className="mt-3 h-[120px]">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={chartData}>
+                              <Bar
+                                dataKey="goal"
+                                style={
+                                  {
+                                    fill: "hsl(var(--foreground))",
+                                    opacity: 0.9,
+                                  } as React.CSSProperties
+                                }
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                      <DrawerFooter>
+                        <Button>Submit</Button>
+                        <DrawerClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DrawerClose>
+                      </DrawerFooter>
+                    </div>
+                  </DrawerContent>
+                </Drawer>
+              </CardFooter>
+            </Card>
+          ))
+        ) : (
+          <LoaderCircle className="animate-spin" />
+        )}
+      </section>
+
+      <Carousel
+        page={page}
+        setPage={setPage}
+        totalPages={data ? data.total_pages : 100}
+      />
+    </main>
   );
 };
 
