@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import DialogModal from "./components/dialog-modal";
+import CreateSessionModal from "./components/create-session-modal";
 import Drawerform from "./components/drawer-form";
 
 const fetchSessions = async (page: number) => {
@@ -33,7 +33,7 @@ const Sessions = () => {
 
   return (
     <main className="sm:ml-14 p-4 space-y-4">
-      <DialogModal />
+      <CreateSessionModal />
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {data ? (
           data.sessions.map((session, i) => (

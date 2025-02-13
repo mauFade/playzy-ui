@@ -1,6 +1,10 @@
 import { getCookie } from "cookies-next";
 
-import { SessionPageResponseInterface } from "./dto/sessions";
+import {
+  CreateSessionRequestInterface,
+  CreateSessionResponseInterface,
+  SessionPageResponseInterface,
+} from "./dto/sessions";
 import {
   CreateUserInterface,
   CreateUserResponseInterface,
@@ -61,6 +65,31 @@ class Api {
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+
+    const r = await response.json();
+
+    if (r.message) {
+      throw new Error(r.message);
+    }
+
+    return r;
+  }
+
+  public async createSession(
+    data: CreateSessionRequestInterface
+  ): Promise<CreateSessionResponseInterface> {
+    const token = getCookie("jwtToken");
+
+    const response = await fetch("http://localhost:8080/sessions", {
+      method: "POST",
+      body: JSON.stringify({
+        ...data,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `Bearer ${token}`,
       },
     });
 

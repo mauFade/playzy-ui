@@ -20,3 +20,21 @@ export interface SessionPageResponseInterface {
   total_pages: number;
   sessions: SessionInterface[];
 }
+
+export interface CreateSessionRequestInterface {
+  game: string;
+  objective: string;
+  rank: string | null;
+  is_ranked: boolean;
+}
+
+export interface CreateSessionResponseInterface {
+  id: string;
+  game: string;
+  user_id: string;
+  objetive: string;
+  rank: string | null;
+  is_ranked: true;
+  updated_at: string;
+  created_at: string;
+}
