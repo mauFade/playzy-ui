@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { DrawerClose } from "@/components/ui/drawer";
 
 const DialogModal = () => {
   const [game, setGame] = useState<string>("");
@@ -88,10 +90,49 @@ const DialogModal = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="rank" className="text-right">
+              Ranque
+            </Label>
+            <Input
+              id="rank"
+              value={rank}
+              onChange={(e) => setRank(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label className="text-right">É ranked?</Label>
+            <RadioGroup
+              value={isRanked ? "sim" : "não"}
+              onValueChange={(value) => setIsRanked(value === "sim")}
+              className="col-span-3 flex gap-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="sim" id="ranked-sim" />
+                <Label htmlFor="ranked-sim">Sim</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="não" id="ranked-nao" />
+                <Label htmlFor="ranked-nao">Não</Label>
+              </div>
+            </RadioGroup>
+          </div>
         </div>
 
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <DrawerClose asChild>
+            <Button
+              type="button"
+              onClick={() => {
+                console.log({ game, isRanked, rank, objective });
+              }}
+            >
+              Save changes
+            </Button>
+          </DrawerClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
