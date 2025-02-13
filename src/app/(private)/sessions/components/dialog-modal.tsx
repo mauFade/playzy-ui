@@ -25,6 +25,8 @@ import { Label } from "@/components/ui/label";
 const DialogModal = () => {
   const [game, setGame] = useState<string>("");
   const [objective, setObjective] = useState<string>("");
+  const [rank, setRank] = useState<string | undefined>("");
+  const [isRanked, setIsRanked] = useState<boolean>(true);
 
   return (
     <Dialog>
