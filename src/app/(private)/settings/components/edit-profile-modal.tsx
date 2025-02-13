@@ -15,8 +15,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 const mockUser = {
   name: "Mauricio",
@@ -35,19 +42,14 @@ const formSchema = z.object({
 
 const EditProfileModal = () => {
   const [user, setUser] = useState(mockUser);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: user,
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     setUser({ ...data, avatar: "" });
-    reset(data);
+    form.reset(data);
   };
 
   return (
@@ -62,39 +64,68 @@ const EditProfileModal = () => {
             Atualize suas informações abaixo.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
-          <div>
-            <Label htmlFor="name">Nome</Label>
-            <Input id="name" {...register("name")} />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="gamertag">Gamertag</Label>
-            <Input id="gamertag" {...register("gamertag")} />
-            {errors.gamertag && (
-              <p className="text-red-500 text-sm">{errors.gamertag.message}</p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" {...register("email")} />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="phone">Telefone</Label>
-            <Input id="phone" {...register("phone")} />
-            {errors.phone && (
-              <p className="text-red-500 text-sm">{errors.phone.message}</p>
-            )}
-          </div>
-          <DialogFooter>
-            <Button type="submit">Salvar</Button>
-          </DialogFooter>
-        </form>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid gap-4 py-4"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nome</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="gamertag"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gamertag</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefone</FormLabel>
+                  <FormControl>
+                    <Input type="tel" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
+              <Button type="submit">Salvar</Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
