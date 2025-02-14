@@ -1,7 +1,4 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -41,10 +38,9 @@ const formSchema = z.object({
 });
 
 const EditProfileModal = () => {
-  const [user, setUser] = useState(mockUser);
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: user,
+    defaultValues: mockUser,
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {

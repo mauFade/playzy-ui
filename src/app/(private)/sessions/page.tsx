@@ -6,6 +6,7 @@ import React, { useState } from "react";
 
 import { api } from "@/api/api";
 import Carousel from "@/components/carousel";
+import { AvatarImage, Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Card,
   CardContent,
@@ -47,11 +48,23 @@ const Sessions = () => {
                   <Gamepad2 className="ml-auto w-6 h-6" />
                 </div>
 
-                <CardDescription>
-                  Sessão de jogo criada por:{" "}
+                <CardDescription className="flex flex-row items-center space-x-1">
+                  <span className="text-base sm:text-lg">
+                    Sessão de jogo criada por:
+                  </span>
                   <span className="text-base sm:text-lg font-bold">
                     {session.user.gamertag}
                   </span>
+                  <Avatar className="w-6 h-6">
+                    <AvatarImage
+                      src={
+                        i % 2 === 0
+                          ? "https://www.github.com/mauFade.png"
+                          : "https://www.github.com/shadcn.png"
+                      }
+                    />
+                    <AvatarFallback>MC</AvatarFallback>
+                  </Avatar>
                 </CardDescription>
               </CardHeader>
 
