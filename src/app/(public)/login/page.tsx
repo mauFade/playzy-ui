@@ -10,10 +10,11 @@ import { SlGameController } from "react-icons/sl";
 
 import { api } from "@/api/api";
 import Input from "@/components/Input";
-import { showToast } from "@/utils/showToast";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const router = useRouter();
+  const { toast } = useToast();
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -34,7 +35,10 @@ const Login = () => {
 
       setWait(false);
 
-      showToast(errorMessage, "error");
+      toast({
+        title: "Uh oh! Algo deu errado.",
+        description: errorMessage,
+      });
     },
   });
 

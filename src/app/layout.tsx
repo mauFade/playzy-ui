@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Open_Sans } from "next/font/google";
-import { Toaster } from "react-hot-toast";
 
+import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import ReactQueryProvider from "@configs/ReactQueryProvider";
 
@@ -30,8 +30,8 @@ export default function RootLayout({
         )}
       >
         <ReactQueryProvider>
-          {/* <Toaster position="bottom-left" /> */}
           {children}
+          <Toaster />
         </ReactQueryProvider>
       </body>
     </html>

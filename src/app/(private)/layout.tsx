@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "../../app/globals.css";
 import { Open_Sans } from "next/font/google";
-import { Toaster } from "react-hot-toast";
 
 import Header from "@/components/header";
 import { cn } from "@/lib/utils";

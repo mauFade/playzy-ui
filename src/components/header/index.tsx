@@ -1,6 +1,10 @@
+"use client";
+
 import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { deleteCookie } from "cookies-next";
 import { Home, LogOut, Package, PanelBottom, Settings2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 import { Button } from "../ui/button";
@@ -8,6 +12,13 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 const Header = () => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    deleteCookie("jwtToken"); // Remove o token do cookie
+    router.push("/login"); // Redireciona para a página de login
+  };
+
   return (
     <div className="flex flex-col w-full bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 w-14 border-r bg-background hidden sm:flex flex-col">
@@ -57,13 +68,15 @@ const Header = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link
-                  href="#"
-                  className="flex w-9 h-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="w-9 h-9 rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                  onClick={handleLogout}
                 >
                   <LogOut className="w-5 h-5" />
                   <span className="sr-only">Sair</span>
-                </Link>
+                </Button>
               </TooltipTrigger>
 
               <TooltipContent side="right">Sair</TooltipContent>
