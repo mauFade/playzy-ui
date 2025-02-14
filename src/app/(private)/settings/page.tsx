@@ -10,7 +10,7 @@ export default function ProfileSettings() {
     name: "Mauricio",
     email: "mauricio.cds55777@gmail.com",
     phone: "41985351419",
-    avatar: "https://www.github.com/mauFade.png",
+    avatar: "https://github.com/shadcn.png",
     gamertag: "maucardsm11785",
   };
 

@@ -29,7 +29,7 @@ const mockUser = {
   name: "Mauricio",
   email: "mauricio.cds55777@gmail.com",
   phone: "41985351419",
-  avatar: "https://www.github.com/mauFane.png",
+  avatar: "https://www.github.com/mauFade.png",
   gamertag: "maucardsm11785",
 };
 
@@ -48,7 +48,7 @@ const EditProfileModal = () => {
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    setUser({ ...data, avatar: "" });
+    console.log({ ...data, avatar: "https://www.github.com/mauFade.png" });
     form.reset(data);
   };
 
@@ -122,7 +122,9 @@ const EditProfileModal = () => {
               )}
             />
             <DialogFooter>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" onClick={form.handleSubmit(onSubmit)}>
+                Salvar
+              </Button>
             </DialogFooter>
           </form>
         </Form>
