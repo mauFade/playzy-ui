@@ -31,7 +31,6 @@ export default function PrivateLayout({
       >
         <ReactQueryProvider>
           <Header />
-          {/* <Toaster position="bottom-left" /> */}
           {children}
         </ReactQueryProvider>
       </body>

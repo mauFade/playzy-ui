@@ -1,3 +1,5 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,14 +24,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-const mockUser = {
-  name: "Mauricio",
-  email: "mauricio.cds55777@gmail.com",
-  phone: "41985351419",
-  avatar: "https://www.github.com/mauFade.png",
-  gamertag: "maucardsm11785",
-};
-
 const formSchema = z.object({
   name: z.string().min(3, "Nome inválido"),
   email: z.string().email("Email inválido"),
@@ -38,13 +32,17 @@ const formSchema = z.object({
 });
 
 const EditProfileModal = () => {
-  const form = useForm({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: mockUser,
+    defaultValues: {
+      name: "Mauricio",
+      email: "mauricio.cds55777@gmail.com",
+      phone: "41985351419",
+      gamertag: "maucardsm11785",
+    },
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log({ ...data, avatar: "https://www.github.com/mauFade.png" });
     form.reset(data);
   };
 

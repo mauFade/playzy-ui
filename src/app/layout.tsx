@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Open_Sans } from "next/font/google";
 
-import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import ReactQueryProvider from "@configs/ReactQueryProvider";
 
@@ -29,10 +28,7 @@ export default function RootLayout({
           openSans.className
         )}
       >
-        <ReactQueryProvider>
-          {children}
-          <Toaster />
-        </ReactQueryProvider>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
       </body>
     </html>
   );
