@@ -23,8 +23,10 @@ export default function PrivateLayout({
         )}
       >
         <Header />
-        <main>{children}</main>
-        <Toaster />
+        <main>
+          {children}
+          <Toaster />
+        </main>
       </div>
     </ReactQueryProvider>
   );

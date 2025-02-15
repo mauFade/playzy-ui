@@ -27,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z
   .object({
@@ -47,6 +48,8 @@ const formSchema = z
 
 const DialogModal = () => {
   const queryClient = useQueryClient();
+
+  const { toast } = useToast();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -73,6 +76,11 @@ const DialogModal = () => {
       queryClient.invalidateQueries({ queryKey: ["sessions"] });
       setIsOpen(false);
       reset();
+
+      toast({
+        title: "Sucesso!",
+        description: "Sessão criada com sussesso!",
+      });
     },
   });
 
