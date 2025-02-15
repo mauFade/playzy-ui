@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { setCookie } from "cookies-next";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -33,6 +34,9 @@ export default function LoginForm() {
 
   const { toast } = useToast();
 
+  // isPending do react-query não funciona muito bem
+  const [wait, setWait] = useState<boolean>(false);
+
   const loginSchema = z.object({
     email: z.string().email("Email inválido"),
     password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
@@ -53,6 +57,7 @@ export default function LoginForm() {
     onSuccess: ({ token }) => {
       setCookie("jwtToken", token);
       router.push("/sessions");
+      setWait(false);
     },
     onError: (error, variables) => {
       const errorMessage =
@@ -61,10 +66,13 @@ export default function LoginForm() {
           : `O e-mail ${variables.email} não está vinculado a nenhuma conta.`;
 
       toast({ title: "Erro ao fazer login", description: errorMessage });
+
+      setWait(false);
     },
   });
 
   const onSubmit = (data: LoginFormData) => {
+    setWait(true);
     loginMutation.mutate(data);
   };
 
@@ -112,16 +120,8 @@ export default function LoginForm() {
             />
           </CardContent>
           <CardFooter>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loginMutation.isPending}
-            >
-              {loginMutation.isPending ? (
-                <LoaderCircle className="animate-spin" />
-              ) : (
-                "Login"
-              )}
+            <Button type="submit" className="w-full" disabled={wait}>
+              {wait ? <LoaderCircle className="animate-spin" /> : "Login"}
             </Button>
           </CardFooter>
         </form>
