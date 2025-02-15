@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Gamepad2, LoaderCircle } from "lucide-react";
+import { Gamepad2, LoaderCircle, Medal } from "lucide-react";
 import React, { useState } from "react";
 
 import { api } from "@/api/api";
@@ -15,15 +15,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 import CreateSessionModal from "./components/create-session-modal";
-import Drawerform from "./components/drawer-form";
+import SelectSessionModal from "./components/select-session-modal";
 
 const fetchSessions = async (page: number) => {
   const response = await api.getSessions(page);
@@ -46,7 +40,7 @@ const Sessions = () => {
       <CreateSessionModal />
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {data ? (
-          data.sessions.map((session, i) => (
+          data.sessions.map((session) => (
             <Card
               key={session.id}
               className="hover:cursor-pointer"
@@ -72,23 +66,20 @@ const Sessions = () => {
                     {session.user.gamertag}
                   </span>
                   <Avatar className="w-6 h-6">
-                    <AvatarImage
-                      src={
-                        i % 2 === 0
-                          ? "https://www.github.com/mauFade.png"
-                          : "https://www.github.com/shadcn.png"
-                      }
-                    />
+                    <AvatarImage src={session.user.avatar} />
                     <AvatarFallback>MC</AvatarFallback>
                   </Avatar>
                 </CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-1">
-                <p>
+                <p className="flex items-center gap-2">
                   Modo de jogo:{" "}
-                  <span className="text-base sm:text-lg font-bold">
+                  <span className="text-base sm:text-lg font-bold inline-flex items-center gap-1">
                     {session.is_ranked ? "Ranked" : "Casual"}
+                    {session.is_ranked && (
+                      <Medal className="w-5 h-5 text-sky-600" />
+                    )}
                   </span>
                 </p>
                 {session.rank && (
@@ -122,61 +113,13 @@ const Sessions = () => {
         )}
       </section>
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-80 sm:max-w-3xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">
-              {selectedSession?.game}
-            </DialogTitle>
-          </DialogHeader>
-
-          {selectedSession && (
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Avatar className="w-8 h-8">
-                  <AvatarImage src="https://www.github.com/mauFade.png" />
-                  <AvatarFallback>MC</AvatarFallback>
-                </Avatar>
-                <span className="font-semibold">
-                  {selectedSession.user.gamertag}
-                </span>
-              </div>
-
-              <div className="grid gap-2">
-                <p className="text-lg">
-                  Modo de jogo:{" "}
-                  <span className="font-semibold">
-                    {selectedSession.is_ranked ? "Ranked" : "Casual"}
-                  </span>
-                </p>
-                {selectedSession.rank && (
-                  <p className="text-lg">
-                    Ranque:{" "}
-                    <span className="font-semibold">
-                      {selectedSession.rank}
-                    </span>
-                  </p>
-                )}
-                <p className="text-lg">
-                  Objetivo:{" "}
-                  <span className="font-semibold">
-                    {selectedSession.objetive}
-                  </span>
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Criado em:{" "}
-                  {new Date(selectedSession.created_at)
-                    .toLocaleDateString("pt-BR")
-                    .split("/")
-                    .join("-")}
-                </p>
-              </div>
-
-              <Drawerform />
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      {selectedSession && (
+        <SelectSessionModal
+          isModalOpen={isModalOpen}
+          selectedSession={selectedSession}
+          setIsModalOpen={setIsModalOpen}
+        />
+      )}
 
       <Carousel
         page={page}
