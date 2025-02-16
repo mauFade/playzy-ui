@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Filter, Gamepad2, LoaderCircle, Medal } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { api } from "@/api/api";
 import { SessionInterface } from "@/api/dto/sessions";
@@ -24,9 +24,9 @@ import SelectSessionModal from "./components/select-session-modal";
 const fetchSessions = async (
   page: number,
   selectedGame: string | null,
-  isRanked: boolean | null
+  rank: string | null
 ) => {
-  const response = await api.getSessions(page, selectedGame, isRanked);
+  const response = await api.getSessions(page, selectedGame, rank);
   return response;
 };
 
@@ -37,25 +37,15 @@ const Sessions = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
-  const [isRanked, setIsRanked] = useState<boolean | null>(null);
-  const [games, setGames] = useState<string[]>([]);
+  const [selectedRank, setSelectedRank] = useState<string | null>(null);
 
   const { data, refetch } = useQuery({
-    queryKey: ["sessions", page, selectedGame, isRanked],
-    queryFn: () => fetchSessions(page, selectedGame, isRanked),
+    queryKey: ["sessions", page, selectedGame, selectedRank],
+    queryFn: () => fetchSessions(page, selectedGame, selectedRank),
   });
 
-  useEffect(() => {
-    if (data && data.sessions) {
-      const uniqueGames = Array.from(
-        new Set(data.sessions.map((session) => session.game))
-      );
-      setGames(uniqueGames);
-    }
-  }, [data]);
-
   const applyFilters = () => {
-    setPage(1); // Reset to first page when applying filters
+    setPage(1);
     refetch();
   };
 
@@ -70,11 +60,10 @@ const Sessions = () => {
       <FilterSessionModal
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
-        games={games}
         selectedGame={selectedGame}
         setSelectedGame={setSelectedGame}
-        isRanked={isRanked}
-        setIsRanked={setIsRanked}
+        selectedRank={selectedRank}
+        setSelectedRank={setSelectedRank}
         applyFilters={applyFilters}
       />
 

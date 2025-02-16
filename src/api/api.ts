@@ -36,7 +36,7 @@ class Api {
   public async getSessions(
     page = 1,
     selectedGame: string | null,
-    isRanked: boolean | null
+    rank: string | null
   ): Promise<SessionPageResponseInterface> {
     const token = getCookie("jwtToken");
 
@@ -46,12 +46,12 @@ class Api {
       page: page.toString(),
     });
 
-    if (selectedGame && selectedGame !== "all") {
+    if (selectedGame) {
       params.append("game", selectedGame);
     }
 
-    if (isRanked !== null) {
-      params.append("is_ranked", isRanked.toString());
+    if (rank) {
+      params.append("rank", rank);
     }
 
     const response = await fetch(
