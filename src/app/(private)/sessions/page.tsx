@@ -63,7 +63,7 @@ const Sessions = () => {
     <main className="sm:ml-14 p-4 space-y-4">
       <div className="flex justify-between items-center">
         <CreateSessionModal />
-        <Button onClick={() => setIsFilterModalOpen(true)}>
+        <Button variant="outline" onClick={() => setIsFilterModalOpen(true)}>
           <Filter className="mr-2 h-4 w-4" /> Filtrar por...
         </Button>
       </div>
