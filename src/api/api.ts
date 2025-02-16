@@ -33,18 +33,37 @@ class Api {
     return r;
   }
 
-  public async getSessions(page = 1): Promise<SessionPageResponseInterface> {
+  public async getSessions(
+    page = 1,
+    selectedGame: string | null,
+    isRanked: boolean | null
+  ): Promise<SessionPageResponseInterface> {
     const token = getCookie("jwtToken");
 
-    const url = "http://localhost:8080/sessions?page=" + page;
+    // const url = "http://localhost:8080/sessions?page=" + page;
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Authorization: `Bearer ${token}`,
-      },
+    const params = new URLSearchParams({
+      page: page.toString(),
     });
+
+    if (selectedGame && selectedGame !== "all") {
+      params.append("game", selectedGame);
+    }
+
+    if (isRanked !== null) {
+      params.append("is_ranked", isRanked.toString());
+    }
+
+    const response = await fetch(
+      `http://localhost:8080/sessions?${params.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const r = await response.json();
 

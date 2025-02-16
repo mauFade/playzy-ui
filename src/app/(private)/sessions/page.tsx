@@ -1,13 +1,14 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Gamepad2, LoaderCircle, Medal } from "lucide-react";
-import React, { useState } from "react";
+import { Filter, Gamepad2, LoaderCircle, Medal } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 import { api } from "@/api/api";
 import { SessionInterface } from "@/api/dto/sessions";
 import Carousel from "@/components/carousel";
 import { AvatarImage, Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,10 +18,15 @@ import {
 } from "@/components/ui/card";
 
 import CreateSessionModal from "./components/create-session-modal";
+import FilterSessionModal from "./components/filter-session-modal";
 import SelectSessionModal from "./components/select-session-modal";
 
-const fetchSessions = async (page: number) => {
-  const response = await api.getSessions(page);
+const fetchSessions = async (
+  page: number,
+  selectedGame: string | null,
+  isRanked: boolean | null
+) => {
+  const response = await api.getSessions(page, selectedGame, isRanked);
   return response;
 };
 
@@ -29,15 +35,49 @@ const Sessions = () => {
   const [selectedSession, setSelectedSession] =
     useState<SessionInterface | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
+  const [selectedGame, setSelectedGame] = useState<string | null>(null);
+  const [isRanked, setIsRanked] = useState<boolean | null>(null);
+  const [games, setGames] = useState<string[]>([]);
 
-  const { data } = useQuery({
-    queryKey: ["sessions", page],
-    queryFn: () => fetchSessions(page),
+  const { data, refetch } = useQuery({
+    queryKey: ["sessions", page, selectedGame, isRanked],
+    queryFn: () => fetchSessions(page, selectedGame, isRanked),
   });
+
+  useEffect(() => {
+    if (data && data.sessions) {
+      const uniqueGames = Array.from(
+        new Set(data.sessions.map((session) => session.game))
+      );
+      setGames(uniqueGames);
+    }
+  }, [data]);
+
+  const applyFilters = () => {
+    setPage(1); // Reset to first page when applying filters
+    refetch();
+  };
 
   return (
     <main className="sm:ml-14 p-4 space-y-4">
-      <CreateSessionModal />
+      <div className="flex justify-between items-center">
+        <CreateSessionModal />
+        <Button onClick={() => setIsFilterModalOpen(true)}>
+          <Filter className="mr-2 h-4 w-4" /> Filtrar por...
+        </Button>
+      </div>
+      <FilterSessionModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        games={games}
+        selectedGame={selectedGame}
+        setSelectedGame={setSelectedGame}
+        isRanked={isRanked}
+        setIsRanked={setIsRanked}
+        applyFilters={applyFilters}
+      />
+
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {data ? (
           data.sessions.map((session) => (
