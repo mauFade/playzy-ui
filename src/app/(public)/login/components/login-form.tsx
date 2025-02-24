@@ -3,13 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { setCookie } from "cookies-next";
-import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { api } from "@/api/api";
+import { Icons } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -120,8 +120,9 @@ export default function LoginForm() {
             />
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={wait}>
-              {wait ? <LoaderCircle className="animate-spin" /> : "Login"}
+            <Button className="w-full" type="submit" disabled={wait}>
+              {wait && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+              Fazer Login
             </Button>
           </CardFooter>
         </form>
