@@ -2,7 +2,14 @@
 
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { deleteCookie } from "cookies-next";
-import { Home, LogOut, Package, PanelBottom, Settings2 } from "lucide-react";
+import {
+  Home,
+  LogOut,
+  Package,
+  PanelBottom,
+  Send,
+  Settings2,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -15,8 +22,8 @@ const Header = () => {
   const router = useRouter();
 
   const handleLogout = () => {
-    deleteCookie("jwtToken"); // Remove o token do cookie
-    router.push("/login"); // Redireciona para a página de login
+    deleteCookie("jwtToken");
+    router.push("/login");
   };
 
   return (
@@ -46,21 +53,33 @@ const Header = () => {
               <TooltipContent side="right">Início</TooltipContent>
             </Tooltip>
 
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    href="/settings"
-                    className="flex w-9 h-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    <Settings2 className="w-5 h-5" />
-                    <span className="sr-only">Configurações</span>
-                  </Link>
-                </TooltipTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/settings"
+                  className="flex w-9 h-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Settings2 className="w-5 h-5" />
+                  <span className="sr-only">Configurações</span>
+                </Link>
+              </TooltipTrigger>
 
-                <TooltipContent side="right">Configurações</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+              <TooltipContent side="right">Configurações</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/messages"
+                  className="flex w-9 h-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Send className="w-5 h-5" />
+                  <span className="sr-only">Mensagens</span>
+                </Link>
+              </TooltipTrigger>
+
+              <TooltipContent side="right">Mensagens</TooltipContent>
+            </Tooltip>
           </TooltipProvider>
         </nav>
 
@@ -128,6 +147,15 @@ const Header = () => {
                 >
                   <Settings2 className="w-5 h-5 transition-all" />
                   Configurações
+                </Link>
+
+                <Link
+                  href="/messages"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                  prefetch={false}
+                >
+                  <Send className="w-5 h-5 transition-all" />
+                  Mensagens
                 </Link>
               </nav>
             </SheetContent>

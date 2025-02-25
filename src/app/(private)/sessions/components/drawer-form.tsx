@@ -1,10 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -16,94 +17,124 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
 const Drawerform = () => {
+  const [wait, setWait] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+
   const formSchema = z.object({
-    game: z.string().min(3, {
-      message: "Insira o nome de um jogo válido",
-    }),
-    objective: z.string().min(3),
-    rank: z.string().min(3, {
-      message: "Insira um ranque válido",
-    }),
-    is_ranked: z.boolean(),
+    message: z
+      .string()
+      .min(5, "A mensagem deve ter pelo menos 5 caracteres")
+      .max(500, "A mensagem não pode ter mais de 500 caracteres"),
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  type MessageSchema = z.infer<typeof formSchema>;
+
+  const form = useForm<MessageSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      game: "",
-      is_ranked: true,
-      objective: "",
-      rank: "",
+      message: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // eslint-disable-next-line no-console
-    console.log(values);
+  const onSubmit = async (data: MessageSchema) => {
+    setWait(true);
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log({ data });
+
+      toast({
+        title: "Mensagem enviada!",
+        description: "Sua mensagem foi enviada com sucesso.",
+      });
+
+      form.reset();
+      setOpen(false);
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro ao enviar sua mensagem.",
+        variant: "destructive",
+      });
+
+      console.error({ error });
+    } finally {
+      setWait(false);
+    }
   };
 
+  const messageLength = form.watch("message")?.length || 0;
+
   return (
-    <Drawer>
+    <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button>Bora jogar!</Button>
+        <Button size="lg" className="gap-2" variant="outline">
+          <Icons.gamepad className="h-5 w-5" />
+          Bora jogar!
+        </Button>
       </DrawerTrigger>
 
       <DrawerContent>
-        <div className="mx-auto w-full max-w-sm">
+        <div className="mx-auto w-full max-w-lg">
           <DrawerHeader>
-            <DrawerTitle>Criar sessão</DrawerTitle>
-            <DrawerDescription>
-              Crie uma sessão e encontre alguém pra jogar.
+            <DrawerTitle className="text-xl font-bold">Bora jogar!</DrawerTitle>
+            <DrawerDescription className="text-base">
+              Se apresente! Diga se já tá jogando com alguém, se prefere falar
+              por Discord e tudo mais!
             </DrawerDescription>
           </DrawerHeader>
 
-          <div className="p-4 pb-0">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
-                <FormField
-                  control={form.control}
-                  name="game"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Jogo</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Jogo" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Para qual jogo você quer criar uma sessão.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="px-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="message">Sua mensagem</Label>
+                  <span className="text-xs text-muted-foreground">
+                    {messageLength}/500 caracteres
+                  </span>
+                </div>
+                <Textarea
+                  id="message"
+                  placeholder="Qual é a boa? Conte um pouco sobre você e como quer jogar..."
+                  className={`min-h-[120px] resize-none ${form.formState.errors.message && "border-red-500"}`}
+                  {...form.register("message")}
                 />
+                {form.formState.errors.message && (
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.message.message}
+                  </p>
+                )}
+              </div>
+            </div>
 
-                <Button type="submit" className="w-full">
-                  Submit
+            <DrawerFooter>
+              <Button
+                className="w-full"
+                type="submit"
+                disabled={wait || messageLength === 0}
+              >
+                {wait ? (
+                  <>
+                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                    Enviando...
+                  </>
+                ) : (
+                  "Enviar mensagem"
+                )}
+              </Button>
+              <DrawerClose asChild>
+                <Button variant="outline" className="w-full">
+                  Cancelar
                 </Button>
-              </form>
-            </Form>
-          </div>
-
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
+              </DrawerClose>
+            </DrawerFooter>
+          </form>
         </div>
       </DrawerContent>
     </Drawer>

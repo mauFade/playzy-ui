@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { api } from "@/api/api";
-import { Icons } from "@/components/spinner";
+import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,10 +26,8 @@ import { useToast } from "@/hooks/use-toast";
 import { errorMessages } from "@/utils/errorMessages";
 
 const formatPhoneNumber = (value: string) => {
-  // Remove all non-digit characters
   const numbers = value.replace(/\D/g, "");
 
-  // Apply the mask as the user types
   let formatted = numbers;
   if (numbers.length <= 11) {
     formatted = numbers.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
