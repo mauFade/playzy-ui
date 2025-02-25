@@ -23,55 +23,19 @@ interface MessageInterface {
   type: "sent" | "received";
 }
 
-const Messages = () => {
+interface MessagesPropsInterface {
+  roomId: string;
+}
+
+const Messages = ({ roomId }: MessagesPropsInterface) => {
   const [messages, setMessages] = useState<MessageInterface[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Example messages for UI demonstration
-  const exampleMessages: MessageInterface[] = [
-    {
-      id: "1",
-      content: "Oi! Bora jogar?",
-      sender: {
-        id: "2",
-        name: "João",
-        avatar: "/placeholder.svg",
-      },
-      timestamp: new Date().toISOString(),
-      type: "received",
-    },
-    {
-      id: "2",
-      content: "Claro! Que jogo você quer jogar?",
-      sender: {
-        id: "1",
-        name: "Você",
-        avatar: "https://github.com/shadcn.png",
-      },
-      timestamp: new Date().toISOString(),
-      type: "sent",
-    },
-    {
-      id: "3",
-      content: "Que tal um CS2?",
-      sender: {
-        id: "2",
-        name: "João",
-        avatar: "https://github.com/shadcn.png",
-      },
-      timestamp: new Date().toISOString(),
-      type: "received",
-    },
-  ];
-
   useEffect(() => {
-    // Simulate loading initial messages
-    setMessages(exampleMessages);
-
     // WebSocket connection setup would go here
-    // const ws = new WebSocket('ws://localhost:8081/ws')
+    // const ws = new WebSocket(`ws://localhost:8081/ws/${roomId}`)
 
     // ws.onopen = () => {
     //   setIsConnected(true)
@@ -91,6 +55,32 @@ const Messages = () => {
     // return () => {
     //   ws.close()
     // }
+
+    // For now, let's load some example messages
+    setMessages([
+      {
+        id: "1",
+        content: "Oi! Bora jogar?",
+        sender: {
+          id: "2",
+          name: "João",
+          avatar: "https://www.github.com/shadcn.png",
+        },
+        timestamp: new Date().toISOString(),
+        type: "received",
+      },
+      {
+        id: "2",
+        content: "Claro! Que jogo você quer jogar?",
+        sender: {
+          id: "1",
+          name: "Você",
+          avatar: "https://www.github.com/shadcn.png",
+        },
+        timestamp: new Date().toISOString(),
+        type: "sent",
+      },
+    ]);
   }, []);
 
   useEffect(() => {
@@ -111,7 +101,7 @@ const Messages = () => {
       sender: {
         id: "1",
         name: "Você",
-        avatar: "https://github.com/shadcn.png",
+        avatar: "https://www.github.com/shadcn.png",
       },
       timestamp: new Date().toISOString(),
       type: "sent",
@@ -121,7 +111,7 @@ const Messages = () => {
     setMessages((prev) => [...prev, message]);
 
     // Here you would send the message via WebSocket
-    // ws.send(JSON.stringify(message))
+    // ws.send(JSON.stringify({ content: newMessage, roomId }))
 
     // Clear input
     setNewMessage("");
@@ -135,10 +125,10 @@ const Messages = () => {
   };
 
   return (
-    <Card className="flex flex-col h-[calc(100vh-2rem)] mx-auto max-w-3xl mt-4">
+    <Card className="flex flex-col h-[calc(100vh-2rem)] mx-auto max-w-3xl">
       <div className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold">Mensagens</h2>
+          <h2 className="text-xl font-semibold">Sala</h2>
           <div
             className={`w-2 h-2 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"}`}
           />

@@ -1,8 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { v4 } from "uuid";
 import { z } from "zod";
 
 import { Icons } from "@/components/icons";
@@ -22,6 +24,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
 const Drawerform = () => {
+  const router = useRouter();
+
   const [wait, setWait] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
@@ -47,7 +51,8 @@ const Drawerform = () => {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log({ data });
+
+      const id = v4();
 
       toast({
         title: "Mensagem enviada!",
@@ -55,7 +60,8 @@ const Drawerform = () => {
       });
 
       form.reset();
-      setOpen(false);
+
+      router.push(`/messages/${id}`);
     } catch (error) {
       toast({
         title: "Erro",
