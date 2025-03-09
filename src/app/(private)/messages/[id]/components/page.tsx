@@ -4,87 +4,122 @@ import { Send } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/hooks/use-toast";
 
 // Types for our messages
 interface MessageInterface {
   id: string;
   content: string;
-  sender: {
-    id: string;
-    name: string;
-    avatar?: string;
-  };
+  senderId: string;
+  receiverId: string;
   timestamp: string;
-  type: "sent" | "received";
+  isRead: boolean;
+  isMine: boolean;
 }
 
 interface MessagesPropsInterface {
-  roomId: string;
+  otherUserId: string;
+  currentUserId: string; // ID do usuário atual
 }
 
-const Messages = ({ roomId }: MessagesPropsInterface) => {
+const Messages = ({ otherUserId, currentUserId }: MessagesPropsInterface) => {
+  const { toast } = useToast();
+
   const [messages, setMessages] = useState<MessageInterface[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
+  const [connected, setConnected] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const socketRef = useRef<WebSocket | null>(null);
 
+  // Conectar ao WebSocket ao montar o componente
   useEffect(() => {
-    // WebSocket connection setup would go here
-    // const ws = new WebSocket(`ws://localhost:8081/ws/${roomId}`)
+    // Carregar histórico de mensagens
+    fetchMessageHistory();
 
-    // ws.onopen = () => {
-    //   setIsConnected(true)
-    //   console.log('Connected to WebSocket')
-    // }
+    // Conectar ao WebSocket
+    connectWebSocket();
 
-    // ws.onmessage = (event) => {
-    //   const message = JSON.parse(event.data)
-    //   setMessages(prev => [...prev, message])
-    // }
+    // Limpar ao desmontar
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
+  }, [otherUserId, currentUserId]);
 
-    // ws.onclose = () => {
-    //   setIsConnected(false)
-    //   console.log('Disconnected from WebSocket')
-    // }
+  // Buscar histórico de mensagens
+  const fetchMessageHistory = async () => {
+    try {
+      const response = await fetch(`/api/messages?otherUserID=${otherUserId}`);
+      if (!response.ok) {
+        throw new Error("Erro ao buscar mensagens");
+      }
+      const data = await response.json();
+      setMessages(data);
+    } catch (error) {
+      console.error("Erro:", error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar as mensagens anteriores",
+        variant: "destructive",
+      });
+    }
+  };
 
-    // return () => {
-    //   ws.close()
-    // }
+  // Conectar ao WebSocket
+  const connectWebSocket = () => {
+    const socket = new WebSocket(
+      `ws://localhost:8080/ws?userID=${currentUserId}`
+    );
+    socketRef.current = socket;
 
-    // For now, let's load some example messages
-    setMessages([
-      {
-        id: "1",
-        content: "Oi! Bora jogar?",
-        sender: {
-          id: "2",
-          name: "João",
-          avatar: "https://www.github.com/shadcn.png",
-        },
-        timestamp: new Date().toISOString(),
-        type: "received",
-      },
-      {
-        id: "2",
-        content: "Claro! Que jogo você quer jogar?",
-        sender: {
-          id: "1",
-          name: "Você",
-          avatar: "https://www.github.com/shadcn.png",
-        },
-        timestamp: new Date().toISOString(),
-        type: "sent",
-      },
-    ]);
-  }, []);
+    socket.onopen = () => {
+      console.log("Conectado ao WebSocket");
+      setConnected(true);
+    };
 
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Mensagem recebida:", data);
+
+      // Verificar se a mensagem é relevante para esta conversa
+      if (
+        (data.senderId === currentUserId && data.receiverId === otherUserId) ||
+        (data.senderId === otherUserId && data.receiverId === currentUserId)
+      ) {
+        // Adicionar a nova mensagem ao estado
+        setMessages((prevMessages) => [...prevMessages, data]);
+      }
+    };
+
+    socket.onclose = () => {
+      setConnected(false);
+
+      // Tentar reconectar após 3 segundos
+      setTimeout(() => {
+        if (socketRef.current?.readyState !== WebSocket.OPEN) {
+          connectWebSocket();
+        }
+      }, 3000);
+    };
+
+    socket.onerror = (error) => {
+      console.error("Erro WebSocket:", error);
+      toast({
+        title: "Erro de conexão",
+        description: "Problema na conexão de chat em tempo real",
+        variant: "destructive",
+      });
+    };
+  };
+
+  // Rolar para o final quando novas mensagens chegarem
   useEffect(() => {
-    // Scroll to bottom when new messages arrive
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
@@ -92,28 +127,29 @@ const Messages = ({ roomId }: MessagesPropsInterface) => {
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
 
-    // Create new message
-    const message: MessageInterface = {
-      id: Date.now().toString(),
+    if (!newMessage.trim() || !connected) return;
+
+    // Criar objeto da mensagem
+    const messageObj = {
+      type: "message",
       content: newMessage,
-      sender: {
-        id: "1",
-        name: "Você",
-        avatar: "https://www.github.com/shadcn.png",
-      },
-      timestamp: new Date().toISOString(),
-      type: "sent",
+      receiverId: otherUserId,
     };
 
-    // Add message to state
-    setMessages((prev) => [...prev, message]);
+    // Enviar mensagem via WebSocket
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify(messageObj));
+      // A mensagem aparecerá quando o servidor enviar de volta via websocket
+    } else {
+      toast({
+        title: "Não conectado",
+        description: "Não foi possível enviar a mensagem. Tente novamente.",
+        variant: "destructive",
+      });
+    }
 
-    // Here you would send the message via WebSocket
-    // ws.send(JSON.stringify({ content: newMessage, roomId }))
-
-    // Clear input
+    // Limpar input
     setNewMessage("");
   };
 
@@ -128,33 +164,33 @@ const Messages = ({ roomId }: MessagesPropsInterface) => {
     <Card className="flex flex-col h-[calc(100vh-2rem)] mx-auto max-w-3xl">
       <div className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold">Sala</h2>
-          <div
-            className={`w-2 h-2 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"}`}
-          />
+          <h2 className="text-xl font-semibold">Chat</h2>
+          <div className="text-sm text-muted-foreground">
+            {connected ? (
+              <span className="text-green-500">●</span>
+            ) : (
+              <span className="text-red-500">●</span>
+            )}
+          </div>
         </div>
-        <span className="text-sm text-muted-foreground">
-          {isConnected ? "Conectado" : "Desconectado"}
-        </span>
       </div>
 
-      <ScrollArea ref={scrollRef} className="flex-1 p-4">
-        <div className="space-y-4">
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4" ref={scrollRef}>
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex items-start gap-2 ${message.type === "sent" ? "flex-row-reverse" : ""}`}
+              className={`flex items-start gap-2 ${message.isMine ? "flex-row-reverse" : ""}`}
             >
               <Avatar className="w-8 h-8">
-                <AvatarImage src={message.sender.avatar} />
                 <AvatarFallback>
-                  {message.sender.name[0].toUpperCase()}
+                  {message.isMine ? "Me" : "Them"}
                 </AvatarFallback>
               </Avatar>
 
               <div
                 className={`group relative max-w-[80%] rounded-lg p-3 ${
-                  message.type === "sent"
+                  message.isMine
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted"
                 }`}
@@ -175,8 +211,9 @@ const Messages = ({ roomId }: MessagesPropsInterface) => {
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Digite sua mensagem..."
           className="flex-1"
+          disabled={!connected}
         />
-        <Button type="submit" size="icon">
+        <Button type="submit" size="icon" disabled={!connected}>
           <Send className="h-4 w-4" />
         </Button>
       </form>
