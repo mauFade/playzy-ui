@@ -1,9 +1,9 @@
 import Messages from "./components/page";
 
-export default function MessagePage({ params }: { params: { id: string } }) {
+export default function MessagePage() {
   return (
     <div className="container py-4">
-      <Messages roomId={params.id} />
+      <Messages currentUserId="" otherUserId="" />
     </div>
   );
 }

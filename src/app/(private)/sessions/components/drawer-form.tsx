@@ -1,10 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { getCookie } from "cookies-next";
+import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { v4 } from "uuid";
 import { z } from "zod";
 
 import { Icons } from "@/components/icons";
@@ -23,7 +24,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
-const Drawerform = () => {
+const Drawerform = ({ otherUserId }: { otherUserId: string }) => {
   const router = useRouter();
 
   const [wait, setWait] = useState<boolean>(false);
@@ -49,19 +50,51 @@ const Drawerform = () => {
   const onSubmit = async (data: MessageSchema) => {
     setWait(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const token = getCookie("jwtToken");
 
-      const id = v4();
+      if (!token) return;
 
-      toast({
-        title: "Mensagem enviada!",
-        description: "Sua mensagem foi enviada com sucesso.",
-      });
+      const decodedToken = jwtDecode(token as string) as any;
 
-      form.reset();
+      const currentUserId = decodedToken.userId;
 
-      router.push(`/messages/${id}`);
+      const socket = new WebSocket(
+        `ws://localhost:8080/ws?userID=${currentUserId}`
+      );
+
+      socket.onopen = () => {
+        const messageObj = {
+          type: "message",
+          content: data.message,
+          receiverId: otherUserId,
+        };
+
+        // Enviar a mensagem
+        socket.send(JSON.stringify(messageObj));
+
+        // Fechar o WebSocket após enviar
+        socket.close();
+
+        // Mostrar notificação
+        toast({
+          title: "Mensagem enviada!",
+          description: "Sua mensagem foi enviada com sucesso.",
+        });
+
+        // Limpar o formulário
+        form.reset();
+
+        // Fechar o drawer
+        setOpen(false);
+
+        // Redirecionar para a página de mensagens
+        router.push(`/messages/${otherUserId}`);
+      };
+
+      socket.onerror = (error) => {
+        console.error("Erro na conexão WebSocket:", error);
+        throw new Error("Falha na conexão");
+      };
     } catch (error) {
       toast({
         title: "Erro",
