@@ -34,7 +34,7 @@ export default function LoginForm() {
   const router = useRouter();
 
   const { toast } = useToast();
-  const { saveUserToken } = useAuth();
+  const { saveUserToken, setUser } = useAuth();
 
   // isPending do react-query não funciona muito bem
   const [wait, setWait] = useState<boolean>(false);
@@ -56,8 +56,13 @@ export default function LoginForm() {
 
   const loginMutation = useMutation({
     mutationFn: api.login,
-    onSuccess: ({ token }) => {
+    onSuccess: ({ token, email, name, user_id }) => {
       saveUserToken(token);
+      setUser({
+        id: user_id,
+        email,
+        name,
+      });
       router.push("/sessions");
       setWait(false);
     },

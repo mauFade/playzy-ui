@@ -19,6 +19,7 @@ type User = {
 
 type AuthContextType = {
   user: User;
+  setUser(u: User): void;
   saveUserToken(t: string): void;
   logout: () => void;
   isLoading: boolean;
@@ -74,6 +75,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkUserLoggedIn();
   }, []);
 
+  const setUserData = (u: User): void => {
+    if (!u) return;
+
+    setUser({
+      email: u.email,
+      id: u.id,
+      name: u.name,
+    });
+  };
+
   const saveUserToken = (t: string): void => {
     setCookie(COOKIE_KEY, t);
   };
@@ -84,7 +95,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, saveUserToken, logout, isLoading }}>
+    <AuthContext.Provider
+      value={{ user, saveUserToken, setUser: setUserData, logout, isLoading }}
+    >
       {children}
     </AuthContext.Provider>
   );

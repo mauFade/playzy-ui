@@ -5,6 +5,8 @@ export interface LoginInterface {
 
 export interface LoginResponseInterface {
   user_id: string;
+  name: string;
+  email: string;
   token: string;
 }
 
