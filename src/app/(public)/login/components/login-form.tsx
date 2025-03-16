@@ -28,11 +28,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/auth-context";
 
 export default function LoginForm() {
   const router = useRouter();
 
   const { toast } = useToast();
+  const { saveUserToken } = useAuth();
 
   // isPending do react-query não funciona muito bem
   const [wait, setWait] = useState<boolean>(false);
@@ -55,7 +57,7 @@ export default function LoginForm() {
   const loginMutation = useMutation({
     mutationFn: api.login,
     onSuccess: ({ token }) => {
-      setCookie("jwtToken", token);
+      saveUserToken(token);
       router.push("/sessions");
       setWait(false);
     },
