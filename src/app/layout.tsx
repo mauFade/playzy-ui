@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 
 import { Toaster } from "@/components/ui/toaster";
 import ReactQueryProvider from "@configs/ReactQueryProvider";
+import { AuthContextProvider } from "@/context/auth-context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,10 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <ReactQueryProvider>
-          {children}
-          <Toaster />
-        </ReactQueryProvider>
+        <AuthContextProvider>
+          <ReactQueryProvider>
+            {children}
+            <Toaster />
+          </ReactQueryProvider>
+        </AuthContextProvider>
       </body>
     </html>
   );

@@ -28,11 +28,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-// import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/auth-context";
 
 export default function LoginForm() {
   const router = useRouter();
-  // const { saveUserToken, setUser } = useAuth();
+  const { setUserData } = useAuth();
 
   // isPending do react-query não funciona muito bem
   const [wait, setWait] = useState<boolean>(false);
@@ -55,13 +55,15 @@ export default function LoginForm() {
   const loginMutation = useMutation({
     mutationFn: api.login,
     onSuccess: ({ token, email, name, user_id }) => {
-      // saveUserToken(token);
-      // setUser({
-      //   id: user_id,
-      //   email,
-      //   name,
-      // });
-      setCookie("jwtToken", token);
+      setUserData({
+        token,
+        email,
+        name,
+        id: user_id,
+        avatar:
+          "https://i.pinimg.com/736x/93/13/4b/93134b183c46201053495d49f953be58.jpg",
+      });
+
       toast("Tudo certo ao fazer login!", { description: "Bora lá!" });
       router.push("/sessions");
       setWait(false);

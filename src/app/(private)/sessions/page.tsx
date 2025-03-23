@@ -20,6 +20,8 @@ import {
 import CreateSessionModal from "./components/create-session-modal";
 import FilterSessionModal from "./components/filter-session-modal";
 import SelectSessionModal from "./components/select-session-modal";
+import { useAuth } from "@/context/auth-context";
+import { capitalizeName } from "@/lib/utils";
 
 const fetchSessions = async (
   page: number,
@@ -39,6 +41,8 @@ const Sessions = () => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [selectedRank, setSelectedRank] = useState<string | null>(null);
 
+  const { user } = useAuth();
+
   const { data, refetch } = useQuery({
     queryKey: ["sessions", page, selectedGame, selectedRank],
     queryFn: () => fetchSessions(page, selectedGame, selectedRank),
@@ -53,6 +57,19 @@ const Sessions = () => {
     <main className="sm:ml-14 p-4 space-y-4">
       <div className="flex justify-between items-center">
         <CreateSessionModal />
+        <div className="flex flex-row items-center gap-x-3">
+          <Avatar>
+            <AvatarImage
+              src={user?.avatar || "https://github.com/shadcn.png"}
+              alt={`@${user?.name}`}
+            />
+            <AvatarFallback>PZ</AvatarFallback>
+          </Avatar>
+          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+            {user && `Olá, ${capitalizeName(user.name)}`}
+          </h3>
+        </div>
+
         <Button variant="outline" onClick={() => setIsFilterModalOpen(true)}>
           <Filter className="mr-2 h-4 w-4" /> Filtrar por...
         </Button>

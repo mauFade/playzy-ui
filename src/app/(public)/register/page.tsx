@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { errorMessages } from "@/utils/errorMessages";
+import { errorMessages } from "@/constants/errorMessages";
 
 const formatPhoneNumber = (value: string) => {
   const numbers = value.replace(/\D/g, "");
