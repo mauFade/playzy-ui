@@ -56,9 +56,8 @@ const Sessions = () => {
   return (
     <main className="sm:ml-14 p-4 space-y-4">
       <div className="flex justify-between items-center">
-        <CreateSessionModal />
         <div className="flex flex-row items-center gap-x-3">
-          <Avatar>
+          <Avatar className="size-8">
             <AvatarImage
               src={user?.avatar || "https://github.com/shadcn.png"}
               alt={`@${user?.name}`}
@@ -69,10 +68,12 @@ const Sessions = () => {
             {user && `Olá, ${capitalizeName(user.name)}`}
           </h3>
         </div>
-
-        <Button variant="outline" onClick={() => setIsFilterModalOpen(true)}>
-          <Filter className="mr-2 h-4 w-4" /> Filtrar por...
-        </Button>
+        <div className="flex flex-row items-center gap-x-3">
+          <CreateSessionModal />
+          <Button variant="outline" onClick={() => setIsFilterModalOpen(true)}>
+            <Filter className="mr-2 h-4 w-4" /> Filtrar por...
+          </Button>
+        </div>
       </div>
       <FilterSessionModal
         isOpen={isFilterModalOpen}

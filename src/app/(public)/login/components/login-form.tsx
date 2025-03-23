@@ -29,6 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useAuth } from "@/context/auth-context";
+import { ArrowRight, AtSign, KeyRound } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -86,9 +87,14 @@ export default function LoginForm() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Faça login na sua conta</CardTitle>
+    <Card className="border-border/40 shadow-lg">
+      <CardHeader className="pb-4 space-y-1">
+        <h2 className="text-xl font-semibold text-center">
+          Bem-vindo de volta
+        </h2>
+        <p className="text-sm text-muted-foreground text-center">
+          Insira seus dados para acessar sua conta
+        </p>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -98,14 +104,18 @@ export default function LoginForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Entre seu e-mail"
-                      {...field}
-                    />
-                  </FormControl>
+                  <FormLabel className="text-foreground/80">Email</FormLabel>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="seu.email@exemplo.com"
+                        className="pl-10"
+                        {...field}
+                      />
+                    </FormControl>
+                    <AtSign className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -115,23 +125,36 @@ export default function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Senha</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Entre sua senha"
-                      {...field}
-                    />
-                  </FormControl>
+                  <FormLabel className="text-foreground/80">Senha</FormLabel>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="••••••••"
+                        className="pl-10"
+                        {...field}
+                      />
+                    </FormControl>
+                    <KeyRound className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </CardContent>
           <CardFooter>
-            <Button className="w-full" type="submit" disabled={wait}>
-              {wait && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
-              Fazer Login
+            <Button
+              className="w-full font-medium group"
+              type="submit"
+              disabled={wait}
+              size="lg"
+            >
+              {wait ? (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <ArrowRight className="mr-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              )}
+              {wait ? "Entrando..." : "Fazer Login"}
             </Button>
           </CardFooter>
         </form>
