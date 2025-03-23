@@ -27,14 +27,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/context/auth-context";
+import { toast } from "sonner";
+// import { useAuth } from "@/context/auth-context";
 
 export default function LoginForm() {
   const router = useRouter();
-
-  const { toast } = useToast();
-  const { saveUserToken, setUser } = useAuth();
+  // const { saveUserToken, setUser } = useAuth();
 
   // isPending do react-query não funciona muito bem
   const [wait, setWait] = useState<boolean>(false);
@@ -57,12 +55,14 @@ export default function LoginForm() {
   const loginMutation = useMutation({
     mutationFn: api.login,
     onSuccess: ({ token, email, name, user_id }) => {
-      saveUserToken(token);
-      setUser({
-        id: user_id,
-        email,
-        name,
-      });
+      // saveUserToken(token);
+      // setUser({
+      //   id: user_id,
+      //   email,
+      //   name,
+      // });
+      setCookie("jwtToken", token);
+      toast("Tudo certo ao fazer login!", { description: "Bora lá!" });
       router.push("/sessions");
       setWait(false);
     },
@@ -72,7 +72,7 @@ export default function LoginForm() {
           ? "Senha incorreta, tente novamente."
           : `O e-mail ${variables.email} não está vinculado a nenhuma conta.`;
 
-      toast({ title: "Erro ao fazer login", description: errorMessage });
+      toast("Erro ao fazer login", { description: errorMessage });
 
       setWait(false);
     },

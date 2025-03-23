@@ -1,104 +1,73 @@
 "use client";
 
+import { User } from "@/@types/user";
+import { getCookie, setCookie } from "cookies-next";
 import {
   createContext,
+  ReactNode,
   useContext,
-  useState,
   useEffect,
-  type ReactNode,
+  useState,
 } from "react";
-import { setCookie, deleteCookie } from "cookies-next";
 
-const COOKIE_KEY = "jwtToken";
-
-type User = {
+type UserData = {
   id: string;
   name: string;
   email: string;
-} | null;
-
-type AuthContextType = {
-  user: User;
-  setUser(u: User): void;
-  saveUserToken(t: string): void;
-  logout: () => void;
-  isLoading: boolean;
+  avatar: string;
+  token: string;
 };
 
-// Crie o contexto
+type AuthContextType = {
+  setUserData: (data: UserData) => void;
+  user: User | null;
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Hook personalizado para usar o contexto
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
-  }
-  return context;
-}
+export function AuthContextProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
 
-// Provedor do contexto
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Verificar se o usuário já está logado ao carregar a página
   useEffect(() => {
-    const checkUserLoggedIn = async () => {
-      try {
-        // Verificar se há um token no localStorage
-        const token = localStorage.getItem("authToken");
+    const userCookie = getCookie("user");
 
-        if (token) {
-          // Buscar dados do usuário da API
-          const response = await fetch("/api/auth/me", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+    if (userCookie) {
+      const userObject = JSON.parse(userCookie.toString());
 
-          if (response.ok) {
-            const userData = await response.json();
-            setUser(userData);
-          } else {
-            // Token inválido, remover do localStorage
-            localStorage.removeItem("authToken");
-          }
-        }
-      } catch (error) {
-        console.error("Erro ao verificar autenticação:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkUserLoggedIn();
+      setUser({
+        id: userObject.id,
+        name: userObject.name,
+        avatar: userObject.avatar,
+        email: userObject.email,
+      });
+    }
   }, []);
 
-  const setUserData = (u: User): void => {
-    if (!u) return;
+  const setUserData = (data: UserData) => {
+    setCookie(
+      "user",
+      JSON.stringify({
+        id: data.id,
+        name: data.name,
+        avatar: data.avatar,
+        email: data.email,
+      })
+    );
 
-    setUser({
-      email: u.email,
-      id: u.id,
-      name: u.name,
-    });
-  };
-
-  const saveUserToken = (t: string): void => {
-    setCookie(COOKIE_KEY, t);
-  };
-
-  const logout = () => {
-    deleteCookie(COOKIE_KEY);
-    setUser(null);
+    setCookie("jwtToken", data.token);
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, saveUserToken, setUser: setUserData, logout, isLoading }}
-    >
+    <AuthContext.Provider value={{ setUserData, user }}>
       {children}
     </AuthContext.Provider>
   );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 }
