@@ -55,14 +55,15 @@ export default function LoginForm() {
 
   const loginMutation = useMutation({
     mutationFn: api.login,
-    onSuccess: ({ token, email, name, user_id }) => {
+    onSuccess: ({ token, email, name, user_id, avatar, gamertag, phone }) => {
       setUserData({
         token,
         email,
         name,
         id: user_id,
-        avatar:
-          "https://i.pinimg.com/736x/93/13/4b/93134b183c46201053495d49f953be58.jpg",
+        avatar,
+        gamertag,
+        phone,
       });
 
       toast("Tudo certo ao fazer login!", { description: "Bora lá!" });

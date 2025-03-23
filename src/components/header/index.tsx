@@ -70,7 +70,7 @@ const Header = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/messages"
+                  href="/chat"
                   className="flex w-9 h-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <Send className="w-5 h-5" />

@@ -8,6 +8,9 @@ export interface LoginResponseInterface {
   name: string;
   email: string;
   token: string;
+  gamertag: string;
+  phone: string;
+  avatar: string;
 }
 
 export interface CreateUserInterface {

@@ -4,15 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import EditProfileModal from "./components/edit-profile-modal";
+import { useAuth } from "@/context/auth-context";
 
 export default function ProfileSettings() {
-  const user = {
-    name: "Mauricio",
-    email: "mauricio.cds55777@gmail.com",
-    phone: "41985351419",
-    avatar: "https://github.com/shadcn.png",
-    gamertag: "maucardsm11785",
-  };
+  const { user } = useAuth();
 
   return (
     <div className="max-w-2xl mx-auto p-6">
@@ -23,26 +18,26 @@ export default function ProfileSettings() {
         <CardContent>
           <div className="flex items-center gap-4">
             <Avatar className="w-20 h-20">
-              <AvatarImage src={user.avatar} />
+              <AvatarImage src={user?.avatar || ""} />
               <AvatarFallback>MC</AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="text-xl font-semibold">{user.name}</h2>
-              <p className="text-gray-500">{user.gamertag}</p>
+              <h2 className="text-xl font-semibold">{user?.name}</h2>
+              <p className="text-gray-500">{user?.gamertag}</p>
             </div>
           </div>
           <div className="grid gap-4 mt-6">
             <div>
               <Label htmlFor="name">Nome</Label>
-              <Input id="name" defaultValue={user.name} disabled />
+              <Input id="name" defaultValue={user?.name} disabled />
             </div>
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" defaultValue={user.email} disabled />
+              <Input id="email" defaultValue={user?.email} disabled />
             </div>
             <div>
               <Label htmlFor="phone">Telefone</Label>
-              <Input id="phone" defaultValue={user.phone} disabled />
+              <Input id="phone" defaultValue={user?.phone} disabled />
             </div>
           </div>
 

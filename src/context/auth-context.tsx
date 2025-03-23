@@ -16,6 +16,8 @@ type UserData = {
   email: string;
   avatar: string;
   token: string;
+  phone: string;
+  gamertag: string;
 };
 
 type AuthContextType = {
@@ -35,10 +37,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
       const userObject = JSON.parse(userCookie.toString());
 
       setUser({
-        id: userObject.id,
-        name: userObject.name,
-        avatar: userObject.avatar,
-        email: userObject.email,
+        ...userObject,
       });
     }
   }, []);
@@ -47,10 +46,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     setCookie(
       "user",
       JSON.stringify({
-        id: data.id,
-        name: data.name,
-        avatar: data.avatar,
-        email: data.email,
+        ...data,
       })
     );
 
