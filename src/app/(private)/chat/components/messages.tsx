@@ -213,7 +213,7 @@ const Messages = ({ otherUserId, currentUserId }: MessagesPropsInterface) => {
           className="flex-1"
           disabled={!connected}
         />
-        <Button type="submit" size="icon" disabled={!connected}>
+        <Button type="submit" disabled={!connected}>
           <Send className="h-4 w-4" />
         </Button>
       </form>
