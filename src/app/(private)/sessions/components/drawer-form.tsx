@@ -23,22 +23,19 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { connectWebSocket } from "@/lib/connect-websocket";
+
+const formSchema = z.object({
+  message: z
+    .string()
+    .min(5, "A mensagem deve ter pelo menos 5 caracteres")
+    .max(500, "A mensagem não pode ter mais de 500 caracteres"),
+});
+type MessageSchema = z.infer<typeof formSchema>;
 
 const Drawerform = ({ otherUserId }: { otherUserId: string }) => {
-  const router = useRouter();
-
   const [wait, setWait] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
-  const { toast } = useToast();
-
-  const formSchema = z.object({
-    message: z
-      .string()
-      .min(5, "A mensagem deve ter pelo menos 5 caracteres")
-      .max(500, "A mensagem não pode ter mais de 500 caracteres"),
-  });
-
-  type MessageSchema = z.infer<typeof formSchema>;
 
   const form = useForm<MessageSchema>({
     resolver: zodResolver(formSchema),
@@ -48,64 +45,8 @@ const Drawerform = ({ otherUserId }: { otherUserId: string }) => {
   });
 
   const onSubmit = async (data: MessageSchema) => {
-    setWait(true);
-    try {
-      const token = getCookie("jwtToken");
-
-      if (!token) return;
-
-      const decodedToken = jwtDecode(token as string) as any;
-
-      const currentUserId = decodedToken.userId;
-
-      const socket = new WebSocket(
-        `ws://localhost:8080/ws?userID=${currentUserId}`
-      );
-
-      socket.onopen = () => {
-        const messageObj = {
-          type: "message",
-          content: data.message,
-          receiverId: otherUserId,
-        };
-
-        // Enviar a mensagem
-        socket.send(JSON.stringify(messageObj));
-
-        // Fechar o WebSocket após enviar
-        socket.close();
-
-        // Mostrar notificação
-        toast({
-          title: "Mensagem enviada!",
-          description: "Sua mensagem foi enviada com sucesso.",
-        });
-
-        // Limpar o formulário
-        form.reset();
-
-        // Fechar o drawer
-        setOpen(false);
-
-        // Redirecionar para a página de mensagens
-        router.push(`/messages/${otherUserId}`);
-      };
-
-      socket.onerror = (error) => {
-        console.error("Erro na conexão WebSocket:", error);
-        throw new Error("Falha na conexão");
-      };
-    } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Ocorreu um erro ao enviar sua mensagem.",
-        variant: "destructive",
-      });
-
-      console.error({ error });
-    } finally {
-      setWait(false);
-    }
+    console.log({ data });
+    connectWebSocket();
   };
 
   const messageLength = form.watch("message")?.length || 0;
@@ -113,7 +54,7 @@ const Drawerform = ({ otherUserId }: { otherUserId: string }) => {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button size="lg" className="gap-2" variant="outline">
+        <Button className="gap-2" variant="outline">
           <Icons.gamepad className="h-5 w-5" />
           Bora jogar!
         </Button>
