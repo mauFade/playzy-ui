@@ -1,8 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getCookie } from "cookies-next";
-import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -22,8 +20,7 @@ import {
 } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { connectWebSocket } from "@/lib/connect-websocket";
+import { useAuth } from "@/context/auth-context";
 
 const formSchema = z.object({
   message: z
@@ -36,6 +33,9 @@ type MessageSchema = z.infer<typeof formSchema>;
 const Drawerform = ({ otherUserId }: { otherUserId: string }) => {
   const [wait, setWait] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+
+  const router = useRouter();
 
   const form = useForm<MessageSchema>({
     resolver: zodResolver(formSchema),
@@ -45,8 +45,8 @@ const Drawerform = ({ otherUserId }: { otherUserId: string }) => {
   });
 
   const onSubmit = async (data: MessageSchema) => {
-    console.log({ data });
-    connectWebSocket();
+    console.log({ data, otherUserId, user });
+    // connectWebSocket();
   };
 
   const messageLength = form.watch("message")?.length || 0;

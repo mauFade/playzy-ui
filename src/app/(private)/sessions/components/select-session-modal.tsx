@@ -72,7 +72,7 @@ const SelectSessionModal = (props: PropsInterface) => {
             </p>
           </div>
 
-          <Drawerform />
+          <Drawerform otherUserId={props.selectedSession.user.id} />
         </div>
       </DialogContent>
     </Dialog>
