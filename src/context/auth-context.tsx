@@ -1,7 +1,7 @@
 "use client";
 
 import { User } from "@/@types/user";
-import { getCookie, setCookie } from "cookies-next";
+import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import {
   createContext,
   ReactNode,
@@ -10,19 +10,10 @@ import {
   useState,
 } from "react";
 
-type UserData = {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  token: string;
-  phone: string;
-  gamertag: string;
-};
-
 type AuthContextType = {
-  setUserData: (data: UserData) => void;
   user: User | null;
+  setUserData: (data: User, token: string) => void;
+  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,29 +23,32 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const userCookie = getCookie("user");
-
     if (userCookie) {
-      const userObject = JSON.parse(userCookie.toString());
-
-      setUser({
-        ...userObject,
-      });
+      try {
+        const userObject = JSON.parse(userCookie.toString());
+        setUser(userObject);
+      } catch (error) {
+        console.error("Error parsing user cookie:", error);
+        deleteCookie("user");
+        deleteCookie("jwtToken");
+      }
     }
   }, []);
 
-  const setUserData = (data: UserData) => {
-    setCookie(
-      "user",
-      JSON.stringify({
-        ...data,
-      })
-    );
+  const setUserData = (data: User, token: string) => {
+    setCookie("user", JSON.stringify(data));
+    setCookie("jwtToken", token);
+    setUser(data);
+  };
 
-    setCookie("jwtToken", data.token);
+  const logout = () => {
+    deleteCookie("user");
+    deleteCookie("jwtToken");
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ setUserData, user }}>
+    <AuthContext.Provider value={{ user, setUserData, logout }}>
       {children}
     </AuthContext.Provider>
   );

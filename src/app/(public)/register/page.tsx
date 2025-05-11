@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { setCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { errorMessages } from "@/constants/errorMessages";
+import { useAuth } from "@/context/auth-context";
+import { toast } from "sonner";
 
 const formatPhoneNumber = (value: string) => {
   const numbers = value.replace(/\D/g, "");
@@ -38,7 +39,6 @@ const formatPhoneNumber = (value: string) => {
 
 const Register = () => {
   const router = useRouter();
-  const { toast } = useToast();
   const [wait, setWait] = useState<boolean>(false);
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
@@ -63,16 +63,29 @@ const Register = () => {
     },
   });
 
+  const { setUserData } = useAuth();
+
   const mutation = useMutation({
     mutationFn: api.createUser,
-    onSuccess: (data) => {
-      setCookie("jwtToken", data.token);
+    onSuccess: ({ token, email, name, id, gamertag, phone }) => {
+      setUserData(
+        {
+          id,
+          name,
+          email,
+          avatar: "",
+          phone,
+          gamertag,
+        },
+        token
+      );
+      toast("Tudo certo ao criar conta!", { description: "Bora lá!" });
       router.push("/sessions");
     },
     onError: (error) => {
       const errorMessage = errorMessages[error.message] ?? error.message;
       setWait(false);
-      toast({ title: "Erro ao criar conta", description: errorMessage });
+      toast.error("Erro ao criar conta", { description: errorMessage });
     },
   });
 
@@ -80,8 +93,7 @@ const Register = () => {
     setWait(true);
 
     if (data.password !== confirmPassword) {
-      toast({
-        title: "As senhas não coincidem!",
+      toast("As senhas não coincidem!", {
         description: "As senhas devem ser iguais",
       });
       setWait(false);

@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,7 +15,6 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Form,
@@ -56,15 +54,17 @@ export default function LoginForm() {
   const loginMutation = useMutation({
     mutationFn: api.login,
     onSuccess: ({ token, email, name, user_id, avatar, gamertag, phone }) => {
-      setUserData({
-        token,
-        email,
-        name,
-        id: user_id,
-        avatar,
-        gamertag,
-        phone,
-      });
+      setUserData(
+        {
+          email,
+          name,
+          id: user_id,
+          avatar,
+          gamertag,
+          phone,
+        },
+        token
+      );
 
       toast("Tudo certo ao fazer login!", { description: "Bora lá!" });
       router.push("/sessions");
