@@ -1,36 +1,37 @@
 "use client";
 
+import { Send, Phone, Video, MoreVertical, ArrowLeft } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { Send, Phone, Video, MoreVertical, ArrowLeft } from "lucide-react";
+
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
 import { useMobile } from "@/hooks/use-mobile";
 import { capitalizeName } from "@/lib/utils";
+import { websocketService, type ChatMessage } from "@/lib/websocket";
 
-interface Message {
-  id: string;
-  content: string;
-  senderId: string;
-  timestamp: Date;
-}
-
-interface ChatPageProps {
+interface ChatPagePropsInterface {
   data: { message: string };
   userId: string;
   otherUserId: string;
   userName: string;
 }
 
-const ChatPage = ({ userId, otherUserId, data, userName }: ChatPageProps) => {
+const ChatPage = ({
+  userId,
+  otherUserId,
+  data,
+  userName,
+}: ChatPagePropsInterface) => {
   const [inputMessage, setInputMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   const isMobile = useMobile();
+
   useEffect(() => {
+    // Initialize messages with the initial message
     setMessages([
       {
         id: "1",
@@ -39,33 +40,38 @@ const ChatPage = ({ userId, otherUserId, data, userName }: ChatPageProps) => {
         timestamp: new Date(),
       },
     ]);
-  }, [data.message, otherUserId]);
+
+    // Connect to WebSocket
+    websocketService.connect(userId, otherUserId);
+
+    // Add message handler
+    const handleNewMessage = (message: ChatMessage) => {
+      setMessages((prev) => [...prev, message]);
+    };
+    websocketService.addMessageHandler(handleNewMessage);
+
+    // Cleanup on unmount
+    return () => {
+      websocketService.removeMessageHandler(handleNewMessage);
+      websocketService.disconnect();
+    };
+  }, [data.message, otherUserId, userId]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!inputMessage.trim()) return;
 
-    const newMessage: Message = {
+    const newMessage: ChatMessage = {
       id: Date.now().toString(),
       content: inputMessage,
       senderId: userId,
       timestamp: new Date(),
     };
 
-    setMessages([...messages, newMessage]);
+    // Send message through WebSocket
+    websocketService.sendMessage(newMessage);
     setInputMessage("");
-
-    // Simulate a response after 1 second
-    setTimeout(() => {
-      const responseMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: "Thanks for your message! This is an automated response.",
-        senderId: otherUserId,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, responseMessage]);
-    }, 1000);
   };
 
   const formatTime = (date: Date) => {

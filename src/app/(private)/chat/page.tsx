@@ -1,8 +1,10 @@
 "use client";
 
-import { useChat } from "@/context/chat-context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+
+import { useChat } from "@/context/chat-context";
+
 import ChatPage from "./components/chat-page";
 
 const Chat = () => {
