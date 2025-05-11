@@ -21,6 +21,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/auth-context";
+import { useChat } from "@/context/chat-context";
 
 const formSchema = z.object({
   message: z
@@ -34,6 +35,7 @@ const Drawerform = ({ otherUserId }: { otherUserId: string }) => {
   const [wait, setWait] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
+  const { setChatData } = useChat();
 
   const router = useRouter();
 
@@ -45,8 +47,15 @@ const Drawerform = ({ otherUserId }: { otherUserId: string }) => {
   });
 
   const onSubmit = async (data: MessageSchema) => {
-    console.log({ data, otherUserId, user });
-    // connectWebSocket();
+    if (!user) return;
+
+    setChatData({
+      message: data.message,
+      userId: user.id,
+      otherUserId,
+    });
+
+    router.push("/chat");
   };
 
   const messageLength = form.watch("message")?.length || 0;
