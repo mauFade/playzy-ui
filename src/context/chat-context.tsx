@@ -6,6 +6,7 @@ type ChatData = {
   message: string;
   userId: string;
   otherUserId: string;
+  userName: string;
 };
 
 type ChatContextType = {

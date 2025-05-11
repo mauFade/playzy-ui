@@ -23,6 +23,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/auth-context";
 import { useChat } from "@/context/chat-context";
 
+interface DrawerFormProps {
+  userName: string;
+  otherUserId: string;
+}
+
 const formSchema = z.object({
   message: z
     .string()
@@ -31,7 +36,7 @@ const formSchema = z.object({
 });
 type MessageSchema = z.infer<typeof formSchema>;
 
-const Drawerform = ({ otherUserId }: { otherUserId: string }) => {
+const Drawerform = ({ otherUserId, userName }: DrawerFormProps) => {
   const [wait, setWait] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
@@ -53,6 +58,7 @@ const Drawerform = ({ otherUserId }: { otherUserId: string }) => {
       message: data.message,
       userId: user.id,
       otherUserId,
+      userName,
     });
 
     router.push("/chat");

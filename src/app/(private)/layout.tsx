@@ -3,7 +3,6 @@ import type React from "react";
 import "../../app/globals.css";
 
 import Header from "@/components/header";
-import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import ReactQueryProvider from "@configs/ReactQueryProvider";
 
@@ -23,10 +22,7 @@ export default function PrivateLayout({
         )}
       >
         <Header />
-        <main>
-          {children}
-          <Toaster />
-        </main>
+        <main>{children}</main>
       </div>
     </ReactQueryProvider>
   );

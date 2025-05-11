@@ -22,6 +22,7 @@ const Chat = () => {
       data={{ message: chatData.message }}
       userId={chatData.userId}
       otherUserId={chatData.otherUserId}
+      userName={chatData.userName}
     />
   );
 };
