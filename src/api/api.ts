@@ -1,3 +1,4 @@
+import axios, { AxiosError, AxiosInstance } from "axios";
 import { getCookie } from "cookies-next";
 
 import {
@@ -13,24 +14,35 @@ import {
 } from "./dto/users";
 
 class Api {
-  public async login(data: LoginInterface): Promise<LoginResponseInterface> {
-    const response = await fetch("http://localhost:8080/auth", {
-      method: "POST",
-      body: JSON.stringify({
-        ...data,
-      }),
+  private axios: AxiosInstance;
+
+  constructor() {
+    this.axios = axios.create({
+      baseURL: "http://localhost:8080",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
     });
 
-    const r = await response.json();
+    this.axios.interceptors.request.use((config) => {
+      const token = getCookie("jwtToken");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    });
+  }
 
-    if (r.message) {
-      throw new Error(r.message);
+  public async login(data: LoginInterface): Promise<LoginResponseInterface> {
+    try {
+      const response = await this.axios.post("/auth", data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw error;
     }
-
-    return r;
   }
 
   public async getSessions(
@@ -38,10 +50,6 @@ class Api {
     selectedGame: string | null,
     rank: string | null
   ): Promise<SessionPageResponseInterface> {
-    const token = getCookie("jwtToken");
-
-    // const url = "http://localhost:8080/sessions?page=" + page;
-
     const params = new URLSearchParams({
       page: page.toString(),
     });
@@ -54,71 +62,54 @@ class Api {
       params.append("rank", rank);
     }
 
-    const response = await fetch(
-      `http://localhost:8080/sessions?${params.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          Authorization: `Bearer ${token}`,
-        },
+    try {
+      const response = await this.axios.get(`/sessions?${params.toString()}`);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data?.message) {
+        throw new Error(error.response.data.message);
       }
-    );
-
-    const r = await response.json();
-
-    if (r.message) {
-      throw new Error(r.message);
+      throw error;
     }
-
-    return r;
   }
 
   public async createUser(
     data: CreateUserInterface
   ): Promise<CreateUserResponseInterface> {
-    const response = await fetch("http://localhost:8080/users", {
-      method: "POST",
-      body: JSON.stringify({
-        ...data,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
-
-    const r = await response.json();
-
-    if (r.message) {
-      throw new Error(r.message);
+    try {
+      const response = await this.axios.post("/users", data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw error;
     }
-
-    return r;
   }
 
   public async createSession(
     data: CreateSessionRequestInterface
   ): Promise<CreateSessionResponseInterface> {
-    const token = getCookie("jwtToken");
-
-    const response = await fetch("http://localhost:8080/sessions", {
-      method: "POST",
-      body: JSON.stringify({
-        ...data,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const r = await response.json();
-
-    if (r.message) {
-      throw new Error(r.message);
+    try {
+      const response = await this.axios.post("/sessions", data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw error;
     }
+  }
 
-    return r;
+  public async updateSession(): Promise<void> {
+    try {
+      await this.axios.put("/sessions", { name: "test" });
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw error;
+    }
   }
 }
 
