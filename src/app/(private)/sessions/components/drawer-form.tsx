@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/auth-context";
 import { useChat } from "@/context/chat-context";
 
-interface DrawerFormProps {
+interface DrawerFormPropsInterface {
   userName: string;
   otherUserId: string;
 }
@@ -36,8 +36,7 @@ const formSchema = z.object({
 });
 type MessageSchema = z.infer<typeof formSchema>;
 
-const Drawerform = ({ otherUserId, userName }: DrawerFormProps) => {
-  const [wait, setWait] = useState<boolean>(false);
+const Drawerform = ({ otherUserId, userName }: DrawerFormPropsInterface) => {
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
   const { setChatData } = useChat();
@@ -112,16 +111,10 @@ const Drawerform = ({ otherUserId, userName }: DrawerFormProps) => {
               <Button
                 className="w-full"
                 type="submit"
-                disabled={wait || messageLength === 0}
+                disabled={messageLength === 0}
               >
-                {wait ? (
-                  <>
-                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                    Enviando...
-                  </>
-                ) : (
-                  "Enviar mensagem"
-                )}
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                Enviando...
               </Button>
               <DrawerClose asChild>
                 <Button variant="outline" className="w-full">

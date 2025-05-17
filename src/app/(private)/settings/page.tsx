@@ -2,9 +2,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/auth-context";
 
 import EditProfileModal from "./components/edit-profile-modal";
-import { useAuth } from "@/context/auth-context";
 
 export default function ProfileSettings() {
   const { user } = useAuth();

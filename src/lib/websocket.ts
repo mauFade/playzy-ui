@@ -1,4 +1,4 @@
-export interface ChatMessage {
+export interface ChatMessageInterface {
   id: string;
   content: string;
   senderId: string;
@@ -7,7 +7,7 @@ export interface ChatMessage {
 
 class WebSocketService {
   private ws: WebSocket | null = null;
-  private messageHandlers: ((message: ChatMessage) => void)[] = [];
+  private messageHandlers: ((message: ChatMessageInterface) => void)[] = [];
 
   connect(userId: string, otherUserId: string) {
     const wsUrl = `ws://localhost:8080/ws?userID=${userId}&otherUserID=${otherUserId}`;
@@ -39,7 +39,7 @@ class WebSocketService {
     };
   }
 
-  sendMessage(message: ChatMessage) {
+  sendMessage(message: ChatMessageInterface) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     } else {
@@ -47,11 +47,11 @@ class WebSocketService {
     }
   }
 
-  addMessageHandler(handler: (message: ChatMessage) => void) {
+  addMessageHandler(handler: (message: ChatMessageInterface) => void) {
     this.messageHandlers.push(handler);
   }
 
-  removeMessageHandler(handler: (message: ChatMessage) => void) {
+  removeMessageHandler(handler: (message: ChatMessageInterface) => void) {
     this.messageHandlers = this.messageHandlers.filter((h) => h !== handler);
   }
 
